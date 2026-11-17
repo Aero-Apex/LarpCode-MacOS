@@ -1,0 +1,130 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    env:
+      LARPCODE_UPDATE_URL: https://github.com/${{ github.repository }}/releases/latest/download/LarpCode-Setup.exe
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Resolve version
+        shell: pwsh
+        run: |
+          $version = (Get-Content VERSION -Raw).Trim()
+          if ($env:GITHUB_REF_TYPE -eq "tag" -and $env:GITHUB_REF_NAME -ne "v$version") {
+            throw "tag $env:GITHUB_REF_NAME does not match VERSION v$version"
+          }
+          "LARPCODE_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "LARPCODE_TAG=v$version" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build bundled CLI
+        env:
+          OPENCODE_CHANNEL: prod
+          OPENCODE_VERSION: ${{ env.LARPCODE_VERSION }}
+          LARPCODE_DESKTOP_DISTRIBUTION: "1"
+        run: bun run packages/cli/script/build.ts --single --baseline --skip-install
+
+      - name: Build standalone CLI
+        env:
+          OPENCODE_CHANNEL: prod
+          OPENCODE_VERSION: ${{ env.LARPCODE_VERSION }}
+          LARPCODE_CLI_DISTRIBUTION: "1"
+        run: bun run packages/cli/script/build.ts --single --baseline --skip-install --outdir=dist-cli
+
+      - name: Build desktop
+        env:
+          OPENCODE_CHANNEL: prod
+          OPENCODE_VERSION: ${{ env.LARPCODE_VERSION }}
+        run: bun run --cwd packages/desktop build
+
+      - name: Fetch Tor and curl-impersonate
+        env:
+          TOR_EXPERT_URL: ${{ vars.TOR_EXPERT_URL }}
+          TOR_EXPERT_SHA256: ${{ vars.TOR_EXPERT_SHA256 }}
+          CURL_IMPERSONATE_URL: ${{ vars.CURL_IMPERSONATE_URL }}
+          CURL_IMPERSONATE_SHA256: ${{ vars.CURL_IMPERSONATE_SHA256 }}
+        run: bun run script/fetch-installer-deps.ts
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          choco install innosetup --no-progress -y
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          if (!(Test-Path $iscc)) { $iscc = "C:\Program Files\Inno Setup 6\ISCC.exe" }
+          if (!(Test-Path $iscc)) { throw "ISCC.exe not found" }
+          $env:ISCC = $iscc
+          bun run script/stage-installer.ts
+
+      - name: Source archive
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          git archive --format=zip --prefix="LarpCode-$env:LARPCODE_VERSION/" `
+            -o "dist/LarpCode-$env:LARPCODE_VERSION-source.zip" HEAD
+
+      - name: Stage release downloads
+        shell: pwsh
+        run: |
+          $installer = "installer/dist/LarpCode-Setup.exe"
+          if (!(Test-Path $installer)) { throw "installer missing" }
+          Copy-Item $installer "dist/LarpCode-Setup.exe"
+
+          $cli = "packages/cli/dist-cli/cli-windows-x64-baseline/bin/opencode.exe"
+          if (!(Test-Path $cli)) { throw "standalone CLI missing" }
+          Copy-Item $cli "dist/larpcode.exe"
+          Copy-Item "script/install-cli.ps1" "dist/install-cli.ps1"
+
+          $installerHash = (Get-FileHash "dist/LarpCode-Setup.exe" -Algorithm SHA256).Hash.ToLower()
+          @{ version = $env:LARPCODE_VERSION; url = $env:LARPCODE_UPDATE_URL; sha256 = $installerHash; notes = "" } |
+            ConvertTo-Json -Compress | Set-Content -Encoding utf8 "dist/update.json"
+
+          $cliHash = (Get-FileHash "dist/larpcode.exe" -Algorithm SHA256).Hash.ToLower()
+          $cliUrl = "https://github.com/$env:GITHUB_REPOSITORY/releases/download/$env:LARPCODE_TAG/larpcode.exe"
+          @{
+            version = $env:LARPCODE_VERSION
+            assets = @{
+              "win32-x64" = @{ url = $cliUrl; sha256 = $cliHash }
+            }
+          } | ConvertTo-Json -Depth 5 -Compress | Set-Content -Encoding utf8 "dist/cli.json"
+
+      - name: Checksums
+        shell: pwsh
+        run: |
+          $lines = Get-ChildItem dist -File |
+            Where-Object { $_.Name -ne "SHA256SUMS" } |
+            Sort-Object Name |
+            ForEach-Object { "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)" }
+          $lines | Set-Content -Encoding ascii "dist/SHA256SUMS"
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.LARPCODE_TAG }}
+          name: LarpCode ${{ env.LARPCODE_VERSION }}
+          draft: true
+          generate_release_notes: true
+          files: |
+            dist/LarpCode-Setup.exe
+            dist/larpcode.exe
+            dist/install-cli.ps1
+            dist/cli.json
+            dist/LarpCode-${{ env.LARPCODE_VERSION }}-source.zip
+            dist/update.json
+            dist/SHA256SUMS
