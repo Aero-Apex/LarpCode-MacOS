@@ -151,7 +151,7 @@ Name: "{group}\LarpCode"; Filename: "{app}\shortcuts\{#AppExeName}"; WorkingDir:
 ; window open after the TUI exits. larpcode.cmd points XDG at LarpCode's private
 ; roots so this never talks to an installed OpenCode's state. The installer adds
 ; {app}\shortcuts to the per-user PATH, so typing `larpcode` works too.
-Name: "{group}\LarpCode CLI"; Filename: "{cmd}"; Parameters: "/k ""{app}\shortcuts\larpcode.cmd"""; WorkingDir: "{userprofile}"; IconFilename: "{app}\{#AppIconFile}"; Comment: "Open the LarpCode command line"
+Name: "{group}\LarpCode CLI"; Filename: "{cmd}"; Parameters: "/k ""{app}\shortcuts\larpcode.cmd"""; WorkingDir: "{%USERPROFILE}"; IconFilename: "{app}\{#AppIconFile}"; Comment: "Open the LarpCode command line"
 ; The usage reset pill lives inside the app; this build installs no separate
 ; reset shortcut.
 Name: "{group}\Uninstall LarpCode"; Filename: "{uninstallexe}"
