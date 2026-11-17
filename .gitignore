@@ -52,8 +52,10 @@ tsconfig.tsbuildinfo
 installer/app/
 installer/dist/
 installer/.deps-download/
+installer/.electron-download/
 installer/deps/tor/
 installer/deps/impersonate/
+installer/deps/electron/
 
 # Legal drafts pending review are kept outside the repository; never copy them in.
 legal-drafts-private/

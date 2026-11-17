@@ -158,12 +158,15 @@ bun install
 bun run --cwd packages/cli build
 bun run --cwd packages/desktop build
 bun run script/fetch-installer-deps.ts
+bun run script/fetch-electron.ts
 bun run script/stage-installer.ts
 ```
 
 The desktop build bundles the CLI. `script/stage-installer.ts` stages the app
-and builds `installer/dist/LarpCode-Setup.exe`. The fetch step downloads the
-third-party Tor and curl-impersonate binaries used by the installer.
+and builds `installer/dist/LarpCode-Setup.exe`. The fetch steps download the
+third-party Tor, curl-impersonate, and Electron binaries used by the installer;
+Electron is pinned to `packages/desktop/package.json` and verified against the
+official `SHASUMS256.txt`.
 
 The version comes from the `VERSION` file. A release tag must be `v` plus that
 version (for example `VERSION` = `1.0.0` and tag `v1.0.0`).

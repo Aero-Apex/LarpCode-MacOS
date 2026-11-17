@@ -9,11 +9,13 @@
 //   installer/app/shortcuts/{LarpCode.vbs,larpcode.cmd}
 //   installer/deps/tor/{tor.exe,geoip,geoip6}
 //   installer/deps/impersonate/{curl-impersonate.exe,LICENSE}
+//   installer/deps/electron/electron.exe (or a node_modules fallback)
 //
-// Tor and curl-impersonate are third-party binaries and are never committed.
-// The release workflow downloads them into installer/deps before this runs.
+// Tor, curl-impersonate, and Electron are third-party binaries and are never
+// committed. The release workflow downloads them into installer/deps before
+// this runs (script/fetch-installer-deps.ts and script/fetch-electron.ts).
 import { $ } from "bun"
-import { cp, mkdir, readFile, rm, stat, writeFile } from "node:fs/promises"
+import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises"
 import path from "node:path"
 
 const root = path.resolve(import.meta.dir, "..")
@@ -22,7 +24,7 @@ process.chdir(root)
 const version = (await readFile("VERSION", "utf8")).trim()
 if (!/^\d+\.\d+\.\d+$/.test(version)) throw new Error(`VERSION must be semver-like, got ${version}`)
 
-const tag = process.env.GITHUB_REF_NAME
+const tag = process.env.GITHUB_REF_TYPE === "tag" ? process.env.GITHUB_REF_NAME : undefined
 if (tag && tag !== `v${version}`) throw new Error(`tag ${tag} does not match VERSION v${version}`)
 
 const stage = path.join(root, "installer", "app")
@@ -37,10 +39,7 @@ async function exists(target: string) {
   }
 }
 
-for (const required of [
-  "packages/desktop/out/main/index.js",
-  "packages/desktop/resources/icons/icon.ico",
-]) {
+for (const required of ["packages/desktop/out/main/index.js", "packages/desktop/resources/icons/icon.ico"]) {
   if (!(await exists(required))) throw new Error(`${required} is missing; run the desktop build first`)
 }
 
@@ -97,13 +96,46 @@ await writeFile(
 await $`bun install --cwd ${pkgDir} --production --ignore-scripts --no-save`
 
 // Electron itself is copied verbatim so the launcher can run
-// `electron.exe <install>/desktop-pkg`.
-const electronCandidates = [
-  "packages/desktop/node_modules/electron/dist",
-  "node_modules/electron/dist",
-]
-const electronDir = (await Promise.all(electronCandidates.map(async (dir) => ((await exists(path.join(dir, "electron.exe"))) ? dir : undefined)))).find(Boolean)
-if (!electronDir) throw new Error("Electron runtime not found; run `bun install` in packages/desktop")
+// `electron.exe <install>/desktop-pkg`. The release workflow stages a verified
+// download under installer/deps/electron; the node_modules locations remain as
+// fallbacks for local builds. Bun's isolated install may leave only the virtual
+// store copy, so scan that too.
+async function findElectronRuntime() {
+  const candidates = [
+    process.env.LARPCODE_ELECTRON_DIR,
+    "installer/deps/electron",
+    "packages/desktop/node_modules/electron/dist",
+    "node_modules/electron/dist",
+  ].filter((dir): dir is string => Boolean(dir))
+
+  for (const dir of candidates) if (await exists(path.join(dir, "electron.exe"))) return dir
+
+  try {
+    for (const entry of await readdir(path.join("node_modules", ".bun"))) {
+      if (!entry.startsWith("electron@")) continue
+      const dir = path.join("node_modules", ".bun", entry, "node_modules", "electron", "dist")
+      if (await exists(path.join(dir, "electron.exe"))) return dir
+    }
+  } catch {}
+
+  return undefined
+}
+
+const electronDir = await findElectronRuntime()
+if (!electronDir) {
+  throw new Error(
+    [
+      "Electron runtime not found.",
+      "Run `bun run script/fetch-electron.ts` (release builds) or `bun install` in packages/desktop.",
+      "Searched:",
+      "  - $LARPCODE_ELECTRON_DIR",
+      "  - installer/deps/electron",
+      "  - packages/desktop/node_modules/electron/dist",
+      "  - node_modules/electron/dist",
+      "  - node_modules/.bun/electron@*/node_modules/electron/dist",
+    ].join("\n"),
+  )
+}
 await cp(electronDir, path.join(stage, "electron"), { recursive: true })
 
 await cp("shortcuts", path.join(stage, "shortcuts"), { recursive: true })
@@ -117,7 +149,9 @@ const isccCandidates = [
   "C:/Program Files (x86)/Inno Setup 6/ISCC.exe",
   "C:/Program Files/Inno Setup 6/ISCC.exe",
 ].filter(Boolean) as string[]
-const iscc = (await Promise.all(isccCandidates.map(async (file) => ((await exists(file)) ? file : undefined)))).find(Boolean)
+const iscc = (await Promise.all(isccCandidates.map(async (file) => ((await exists(file)) ? file : undefined)))).find(
+  Boolean,
+)
 if (!iscc) throw new Error("ISCC.exe not found; install Inno Setup 6 or set ISCC")
 
 await $`${iscc} /DAppVersion=${version} ${path.join("installer", "LarpCode-Setup.iss")}`
