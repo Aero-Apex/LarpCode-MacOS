@@ -81,16 +81,26 @@ export const ensure = Effect.fn("service.ensure")(function* (options: EnsureOpti
     if (registration.file !== undefined) handoff = registration.file
     const info = registration.info
     const service = registration.service
-    if (registration.timedOut && info !== undefined) {
+    if (info !== undefined && (registration.timedOut || service === undefined)) {
+      const isDead = yield* Effect.sync(() => {
+        try {
+          process.kill(info.pid, 0)
+          return false
+        } catch {
+          return true
+        }
+      })
       timeouts = {
         info,
         count: timeouts !== undefined && same(timeouts.info, info) ? timeouts.count + 1 : 1,
       }
-      if (timeouts.count >= 3) {
+      if (isDead || timeouts.count >= 3) {
         yield* announce("missing")
-        yield* Effect.logWarning("Background service is unresponsive; recovery cannot preserve persistent terminals")
+        yield* Effect.logWarning("Background service is unresponsive or dead; recovering")
         yield* Effect.tryPromise(() => PtyHandoff.clear(file))
         yield* terminate(info, { file }, timing)
+        const fs = yield* FileSystem.FileSystem
+        if (file) yield* fs.remove(file).pipe(Effect.ignore)
         pool.evict(info.pid)
         pool.recruitNow()
         timeouts = undefined

@@ -4,7 +4,7 @@
 #   irm https://github.com/Tazmyan/LarpCode/releases/latest/download/install-cli.ps1 | iex
 #
 # Install a specific release:
-#   & ([scriptblock]::Create((irm https://github.com/Tazmyan/LarpCode/releases/latest/download/install-cli.ps1))) -Version 1.0.1
+#   & ([scriptblock]::Create((irm https://github.com/Tazmyan/LarpCode/releases/latest/download/install-cli.ps1))) -Version 1.0.2
 #
 # Install a local build:
 #   .\install-cli.ps1 -Binary .\packages\cli\dist-cli\cli-windows-x64\bin\opencode.exe

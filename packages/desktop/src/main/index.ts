@@ -6,6 +6,7 @@ import { assertNoDebugEndpoint, installShield } from "./service/shield"
 import { startSidecarProbe } from "./service/sidecar-probe"
 import { registerUpdater } from "./service/updater"
 import { assertBrandPinned, registerBrand } from "./service/brand"
+import { registerThemeHandlers } from "./service/theme"
 import { registerStorageSnapshotHandler } from "./storage/snapshot"
 import { createEarlyWindow, earlyWindowClosed } from "./windows/early"
 import { rendererAssetsServed } from "./windows/protocol"
@@ -26,6 +27,7 @@ if (acquireApplicationLock()) {
   // The website pill opens this handler. The URL never crosses into the
   // renderer, so a patched renderer cannot redirect it.
   registerBrand()
+  registerThemeHandlers()
   // Window first, then the bundle: starting the import before ready delays ready itself, because the
   // module graph evaluates on the same thread Chromium needs to finish initialising.
   void app.whenReady().then(async () => {

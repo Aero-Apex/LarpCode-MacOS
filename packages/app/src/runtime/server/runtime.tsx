@@ -22,6 +22,7 @@ import {
   type ServerControllersEvent,
 } from "./machine"
 import { pathKey } from "@/workspaces/path-key"
+import { sameDirectory } from "@opencode/util/path"
 import { useServerHealth } from "@/runtime/server/health"
 import { selectServerHostname } from "@/runtime/server/health-machine"
 import { createServerSdkContext } from "./client"
@@ -311,7 +312,10 @@ function createServerController(
 
     return (
       list().find(
-        (project) => pathKey(project.worktree) === key || project.sandboxes.some((sandbox) => pathKey(sandbox) === key),
+        (project) =>
+          pathKey(project.worktree) === key ||
+          sameDirectory(project.worktree, directory) ||
+          project.sandboxes.some((sandbox) => pathKey(sandbox) === key || sameDirectory(sandbox, directory)),
       ) ??
       list()
         .filter((project) => isProjectDirectory(project, directory))
@@ -336,7 +340,7 @@ function createServerController(
         await sync.project.refresh()
         projects.touch(location.project.id)
 
-        return list().find((project) => project.id === location.project.id)
+        return list().find((project) => project.id === location.project.id) ?? withLocalMeta(location.project)
       })
       .catch((error) => {
         showToast({

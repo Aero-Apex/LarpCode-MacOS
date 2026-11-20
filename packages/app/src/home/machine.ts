@@ -2,6 +2,7 @@ import type { ServerConnection } from "@/runtime/server/registry"
 import { toggleHomeProjectSelection } from "@/shell/layout/helpers"
 import type { HomeProjectSelection } from "@/shell/state/layout"
 import { pathKey } from "@/workspaces/path-key"
+import { sameDirectory } from "@opencode/util/path"
 
 export type HomeProjectItem = {
   readonly id: string
@@ -333,7 +334,7 @@ function sameServers(a: readonly HomeServerSnapshot[], b: readonly HomeServerSna
 function findProject(server: HomeServerSnapshot, directory: string) {
   const key = pathKey(directory)
 
-  return server.usedProjects.find((project) => pathKey(project.worktree) === key)
+  return server.usedProjects.find((project) => pathKey(project.worktree) === key || sameDirectory(project.worktree, directory))
 }
 
 // A new object every time: `layout.home.setSelection` reconciles it into the layout store.
