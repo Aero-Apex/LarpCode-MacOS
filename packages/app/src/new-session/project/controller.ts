@@ -89,12 +89,12 @@ export function createComposerProjectControls(props: { draftId: string; worktree
       server: connection,
       location: ServerConnection.key(connection) === ServerConnection.key(projectServer()) ? location().ref : undefined,
       title,
-      onSelect: (result) => {
+      onSelect: async (result) => {
         const directory = Array.isArray(result) ? result[0] : result
 
         if (!directory) return
-        void global.serverCtx(ServerConnection.key(connection))?.projects.add(directory)
-        selectProject(directory, serverKey)
+        const project = await global.serverCtx(ServerConnection.key(connection))?.projects.add(directory)
+        selectProject(project?.worktree ?? directory, serverKey)
       },
     })
   }

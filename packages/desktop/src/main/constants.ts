@@ -32,6 +32,11 @@ const appIDs: Record<string, string> = {
 
 // Local renderer/server mode keeps the dev application identity. Fallback
 // covers any unexpected CHANNEL value so app.setName never receives undefined.
-export const APP_NAME = app.isPackaged ? (appNames[CHANNEL] ?? "LarpCode") : "LarpCode"
+const isProduction =
+  app.isPackaged ||
+  CHANNEL === "prod" ||
+  (!process.env.OPENCODE_DESKTOP_CLI_DEV && !process.env.ELECTRON_RENDERER_URL && CHANNEL !== "local" && CHANNEL !== "dev")
 
-export const APP_ID = app.isPackaged ? (appIDs[CHANNEL] ?? "ai.larpcode.desktop") : "ai.larpcode.desktop.dev"
+export const APP_NAME = isProduction ? (appNames[CHANNEL] ?? "LarpCode") : "LarpCode"
+
+export const APP_ID = isProduction ? (appIDs[CHANNEL] ?? "ai.larpcode.desktop") : (appIDs[CHANNEL] ?? "ai.larpcode.desktop.dev")

@@ -58,8 +58,9 @@ function watchRenderer(sender: number, clear: () => void) {
 // picker behind the app, which looks like the button did nothing.
 function parentWindow() {
   const focused = BrowserWindow.getFocusedWindow()
+  if (focused && !focused.isDestroyed()) return focused
 
-  return focused && !focused.isDestroyed() ? focused : undefined
+  return BrowserWindow.getAllWindows().find((w) => !w.isDestroyed() && w.isVisible())
 }
 
 function showOpenDialog(options: Electron.OpenDialogOptions) {

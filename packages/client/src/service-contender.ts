@@ -120,7 +120,7 @@ export function contenderPool(timing: EnsureTiming) {
 function contenderFailure(contender: ServiceContender) {
   const error = contender.error()
   if (error !== undefined) return error
-  if (contender.child.exitCode !== null && contender.child.exitCode !== 0)
+  if (contender.child.exitCode !== null)
     return startupError(`Server process exited with code ${contender.child.exitCode}`, contender.stderr())
   if (contender.child.signalCode !== null)
     return startupError(`Server process terminated by ${contender.child.signalCode}`, contender.stderr())
@@ -128,7 +128,12 @@ function contenderFailure(contender: ServiceContender) {
 }
 
 export function contenderFinished(contender: ServiceContender) {
-  return contender.error() !== undefined || contender.closed()
+  return (
+    contender.error() !== undefined ||
+    contender.closed() ||
+    contender.child.exitCode !== null ||
+    contender.child.signalCode !== null
+  )
 }
 
 function startupError(message: string, stderr: string) {

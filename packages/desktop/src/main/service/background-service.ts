@@ -27,20 +27,9 @@ function canBind(port: number): Promise<boolean> {
   })
 }
 
-async function chooseServicePort(): Promise<number> {
+async function chooseServicePort(): Promise<number | undefined> {
   if (await canBind(PREFERRED_SERVICE_PORT)) return PREFERRED_SERVICE_PORT
-
-  return new Promise((resolve, reject) => {
-    const server = createServer()
-    server.once("error", reject)
-    server.listen(0, "127.0.0.1", () => {
-      const address = server.address()
-      // SAFETY: Node reports `AddressInfo` for a listening TCP server, or null after close; a null address has no port.
-      // oxlint-disable-next-line anti-slop/no-runtime-typeof -- see SAFETY above
-      const port = address && typeof address === "object" ? address.port : 0
-      server.close(() => (port ? resolve(port) : reject(new Error("no free service port"))))
-    })
-  })
+  return undefined
 }
 
 export interface Interface {
@@ -170,10 +159,9 @@ const prepare = Effect.fn("BackgroundService.prepare")(function* (mode: Backgrou
   // time. Isolated development still gets its separate fixed port below.
   const port = isolated ? undefined : yield* Effect.promise(chooseServicePort)
 
-  if (port !== undefined && port !== PREFERRED_SERVICE_PORT)
-    yield* Effect.logWarning("preferred service port unavailable; using a free port", {
+  if (port === undefined && !isolated)
+    yield* Effect.logInfo("preferred service port unavailable; letting background service allocate port", {
       preferred: PREFERRED_SERVICE_PORT,
-      port,
     })
 
   return { cli, client, file, directory, isolated, version, stateHome, port }

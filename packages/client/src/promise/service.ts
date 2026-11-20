@@ -61,16 +61,18 @@ export async function ensure(options: EnsureOptions = {}): Promise<Endpoint> {
       const registration = await registered(options, timing.requestTimeout)
       const file = registration.file ?? handoff
       if (registration.file !== undefined) handoff = registration.file
-      if (registration.timedOut && registration.info !== undefined) {
+      if (registration.info !== undefined && (registration.timedOut || registration.service === undefined)) {
+        const isDead = stopped(registration.info.pid)
         timeouts = {
           info: registration.info,
           count: timeouts !== undefined && same(timeouts.info, registration.info) ? timeouts.count + 1 : 1,
         }
-        if (timeouts.count >= 3) {
+        if (isDead || timeouts.count >= 3) {
           announce("missing")
-          console.warn("Background service is unresponsive; recovery cannot preserve persistent terminals")
+          console.warn("Background service is unresponsive or dead; recovering")
           await PtyHandoff.clear(file)
           await terminate(registration.info, { file }, timing)
+          await rm(file, { force: true }).catch(() => {})
           pool.evict(registration.info.pid)
           pool.recruitNow()
           timeouts = undefined
