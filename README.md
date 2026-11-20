@@ -67,7 +67,7 @@ app, or share OpenCode's data.
 
 ```powershell
 $install = irm https://github.com/Tazmyan/LarpCode/releases/latest/download/install-cli.ps1
-& ([scriptblock]::Create($install)) -Version 1.0.1
+& ([scriptblock]::Create($install)) -Version 1.0.2
 ```
 
 </details>
