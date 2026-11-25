@@ -52,9 +52,9 @@ if (!app && os === "mac") {
   // flags already carries --mac and the OPENCODE_TARGET-derived --cpu. Build real dmg/zip targets instead of
   // --dir; a secretless job stays unsigned, and a configured identity is passed straight to electron-builder.
   const identity = process.env.MACOS_SIGN_IDENTITY?.trim()
+  // dmg + zip targets come from electron-builder.config.ts (mac.target); they
+  // are not separate CLI flags.
   const macFlags = [
-    "--dmg",
-    "--zip",
     identity ? `-c.mac.identity=${identity}` : "-c.mac.identity=null",
     `-c.publish.url=${RELEASE_FEED}`,
   ]
