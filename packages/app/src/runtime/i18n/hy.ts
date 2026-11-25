@@ -672,7 +672,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} այլ",
   "settings.about.firstPublished": "Առաջին անգամ հրատարակվել է Միսուրիում, ԱՄՆ",
   "settings.about.firstIllustrated": "Առաջին անգամ նկարազարդվել է Լոնդոնում, Անգլիա",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode՝ բաց կոդով կոդավորման գործակալ",
   "settings.about.typeset": "Շարված է Inter և IBM Plex Mono տառատեսակներով",
   "settings.about.tagline": "AI-ը չի կարող հիանալի ծրագրակազմ ստեղծել առանց ձեզ",

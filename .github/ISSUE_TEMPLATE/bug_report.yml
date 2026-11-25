@@ -1,0 +1,118 @@
+name: Bug report
+description: Report a problem with the macOS build of LarpCode
+title: "[Bug]: "
+labels: ["bug", "macOS", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report for **LarpCode macOS**.
+
+        Before you continue, please check that the problem is caused by the macOS
+        port (installer, launcher, signing/quarantine handling, CLI shim, or
+        update feed) rather than by the upstream OpenCode engine. If the same
+        problem happens with upstream OpenCode on another platform, report it to
+        the upstream project instead.
+
+  - type: dropdown
+    id: macos-version
+    attributes:
+      label: macOS version
+      description: Which version of macOS are you running? (Apple menu > About This Mac)
+      options:
+        - "26"
+        - "15"
+        - "14"
+        - "13"
+        - "Other"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: chip
+    attributes:
+      label: Chip
+      description: Apple Silicon or Intel. Check Apple menu > About This Mac.
+      options:
+        - "Apple Silicon"
+        - "Intel"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-type
+    attributes:
+      label: Install type
+      description: How did you install LarpCode macOS?
+      options:
+        - "DMG"
+        - "ZIP"
+        - "CLI-only"
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+      description: The exact version of LarpCode macOS you are using (for example, 1.0.0).
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: What actually happened? Include any error message text.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: List the steps in order so we can reproduce the problem.
+      placeholder: |
+        1. Launch LarpCode from ...
+        2. ...
+        3. See error ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console or log snippet
+      description: Paste relevant output from Console.app, Terminal, or the CLI. Please redact secrets and personal data.
+      render: shell
+
+  - type: dropdown
+    id: gatekeeper-workaround
+    attributes:
+      label: Gatekeeper / xattr workaround used
+      description: Did you need a workaround to open the unsigned build?
+      options:
+        - "No"
+        - "Yes - right-click Open"
+        - "Yes - xattr quarantine"
+        - "Yes - both"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: upstream-check
+    attributes:
+      label: Scope check
+      description: Please confirm the following before submitting.
+      options:
+        - label: "I confirm this issue is specific to the macOS port and is not an upstream OpenCode issue."
+          required: true

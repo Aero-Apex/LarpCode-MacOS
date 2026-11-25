@@ -67,6 +67,31 @@ describe("global roots", () => {
       tmp: path.join(os.tmpdir(), "opencode"),
     })
   })
+
+  test.skipIf(process.platform !== "darwin")("standalone macOS CLI uses LarpCode's own roots", () => {
+    const home = path.join(os.tmpdir(), "larpcode-xdg-home")
+    const root = path.join(home, "Library", "Application Support", "LarpCode macOS", "xdg")
+    const cacheRoot = path.join(home, "Library", "Caches", "LarpCode macOS", "xdg")
+
+    expect(
+      run(
+        {
+          HOME: home,
+          XDG_DATA_HOME: "",
+          XDG_CACHE_HOME: "",
+          XDG_CONFIG_HOME: "",
+          XDG_STATE_HOME: "",
+        },
+        'LARPCODE_CLI_DISTRIBUTION="1"',
+      ),
+    ).toEqual({
+      data: path.join(root, "data", "opencode"),
+      cache: path.join(cacheRoot, "cache", "opencode"),
+      config: path.join(root, "config", "opencode"),
+      state: path.join(root, "state", "opencode"),
+      tmp: path.join(os.tmpdir(), "opencode"),
+    })
+  })
 })
 
 function run(env: Record<string, string>, define?: string) {

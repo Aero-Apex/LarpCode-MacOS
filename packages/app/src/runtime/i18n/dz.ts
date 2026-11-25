@@ -683,7 +683,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} གཞན།",
   "settings.about.firstPublished": "འགོ་དང་པ་ ཡུ་ཨེས་ཨེ་གི་ མི་སོ་རི་ལུ་ དཔར་བསྐྲུན་འབད་ཡོདཔ།",
   "settings.about.firstIllustrated": "འགོ་དང་པ་ ཨིང་ལེནཌ་གི་ ལོན་ཌོན་ལུ་ པར་རིས་བཀོད་ཡོདཔ།",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, ཁ་ཕྱེ་ཡོད་པའི་ཐོན་ཁུངས་གསང་ཡིག་ལས་ཚབ་པ།",
   "settings.about.typeset": "ཨིན་ཊར་དང་ཨའི་བི་ཨེམ་པེལེགསི་མོ་ནོ་ནང་ཡིག་དཔར་གཞི་སྒྲིག།",
   "settings.about.tagline": "ཁྱོད་མེད་པར་ AI གིས་མཉེན་ཆས་ལེགས་ཤོམ་བཟོ་མི་ཐུབ།",

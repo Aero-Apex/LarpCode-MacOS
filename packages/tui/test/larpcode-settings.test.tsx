@@ -16,30 +16,28 @@ const session = {
   time: { created: 0, updated: 0 },
 }
 
-function payload(autoJb: boolean, selection: string) {
-  const active =
-    selection === "auto" ? profiles[0]! : (profiles.find((profile) => profile.id === selection) ?? profiles[0]!)
-  return {
-    ok: true,
-    settings: {
-      autoRotate: true,
-      autoRotateMaxPerHour: 30,
-      freeFallback: true,
-      forceTor: false,
-      egress: "warp",
-    },
-    sources: { autoRotate: "default", freeFallback: "default", forceTor: "default", egress: "default" },
+type Dependency = {
+  id: "warp" | "tor" | "impersonate"
+  name: string
+  installed: boolean
+  path?: string
+  detail: string
+  hint: string
+}
+
+type Platform = {
+  name: string
+  settingsPath: string
+  dependencies: Dependency[]
+}
+
+// The settings menu must behave the same on every platform. Only the paths and
+// binary names differ: Windows probes Program Files/.exe binaries, while macOS
+// resolves warp-cli on PATH and uses POSIX names with no .exe suffix.
+const platforms: Platform[] = [
+  {
+    name: "windows",
     settingsPath: "C:\\data\\larpcode-settings.json",
-    autoJb: {
-      enabled: autoJb,
-      custom: false,
-      selection,
-      profiles,
-      active,
-      length: active.length,
-      defaultLength: profiles[0]!.length,
-      max: 750000,
-    },
     dependencies: [
       {
         id: "warp",
@@ -57,6 +55,62 @@ function payload(autoJb: boolean, selection: string) {
         hint: "Optional.",
       },
     ],
+  },
+  {
+    name: "darwin",
+    settingsPath: "$HOME/Library/Application Support/LarpCode macOS/xdg/config/larpcode-settings.json",
+    dependencies: [
+      {
+        id: "warp",
+        name: "Cloudflare WARP",
+        installed: false,
+        detail: "You don't have Cloudflare WARP installed (warp-cli not found on PATH).",
+        hint: "Install it from https://1.1.1.1/.",
+      },
+      {
+        id: "tor",
+        name: "Tor",
+        installed: true,
+        path: "/Applications/LarpCode macOS.app/Contents/Resources/deps/tor/tor",
+        detail: "installed",
+        hint: "Optional.",
+      },
+      {
+        id: "impersonate",
+        name: "curl-impersonate",
+        installed: false,
+        detail: "Bundled curl-impersonate was not found.",
+        hint: "Optional.",
+      },
+    ],
+  },
+]
+
+function payload(autoJb: boolean, selection: string, platform: Platform) {
+  const active =
+    selection === "auto" ? profiles[0]! : (profiles.find((profile) => profile.id === selection) ?? profiles[0]!)
+  return {
+    ok: true,
+    settings: {
+      autoRotate: true,
+      autoRotateMaxPerHour: 30,
+      freeFallback: true,
+      forceTor: false,
+      egress: "warp",
+    },
+    sources: { autoRotate: "default", freeFallback: "default", forceTor: "default", egress: "default" },
+    settingsPath: platform.settingsPath,
+    autoJb: {
+      enabled: autoJb,
+      custom: false,
+      selection,
+      profiles,
+      active,
+      length: active.length,
+      defaultLength: profiles[0]!.length,
+      max: 750000,
+    },
+    dependencies: platform.dependencies,
     proxy: { configured: false },
     missing: 2,
   }
@@ -87,10 +141,11 @@ const profiles = [
   },
 ]
 
-async function render(state: string) {
+async function render(state: string, platform: Platform) {
   let autoJb = false
   let selection = "auto"
   let freeRoute: unknown
+  let settings: ReturnType<typeof payload> | undefined
   const toggles: string[] = []
   const resets: string[] = []
   const profilesSaved: Array<Record<string, unknown>> = []
@@ -99,8 +154,10 @@ async function render(state: string) {
     args: { sessionID: session.id },
     config: { animations: false, tabs: { mode: "on" } },
     fetch: async (url, request) => {
-      if (url.pathname === "/_larpcode/settings")
-        return json({ ...payload(autoJb, selection), ...(freeRoute ? { freeRoute } : {}) })
+      if (url.pathname === "/_larpcode/settings") {
+        settings = { ...payload(autoJb, selection, platform), ...(freeRoute ? { freeRoute } : {}) }
+        return json(settings)
+      }
       if (url.pathname === "/_larpcode/abliterated") {
         toggles.push(url.search)
         autoJb = url.searchParams.get("enabled") === "1"
@@ -137,109 +194,140 @@ async function render(state: string) {
     toggles,
     resets,
     profilesSaved,
+    settings: () => settings,
     setFreeRoute(value: unknown) {
       freeRoute = value
     },
   }))
 }
 
-test("the LarpCode menu opens from the top-right control and toggles Auto JB", async () => {
-  await using state = await tmpdir()
-  const rendered = await render(state.path)
-  await using setup = rendered.setup
+for (const platform of platforms) {
+  test(`${platform.name}: the LarpCode menu opens from the top-right control and toggles Auto JB`, async () => {
+    await using state = await tmpdir()
+    const rendered = await render(state.path, platform)
+    await using setup = rendered.setup
 
-  await setup.waitForFrame((frame) => frame.includes("LarpCode session"))
-  const marked = await setup.waitForFrame((frame) => frame.includes("⚙!"))
-  const row = marked.split("\n").findIndex((line) => line.includes("⚙!"))
-  const column = marked.split("\n")[row]!.indexOf("⚙!") + 1
-  expect(row).toBe(0)
+    await setup.waitForFrame((frame) => frame.includes("LarpCode session"))
+    const marked = await setup.waitForFrame((frame) => frame.includes("⚙!"))
+    const row = marked.split("\n").findIndex((line) => line.includes("⚙!"))
+    const column = marked.split("\n")[row]!.indexOf("⚙!") + 1
+    expect(row).toBe(0)
 
-  await setup.mockMouse.click(column, row)
-  const opened = await setup.waitForFrame((frame) => frame.includes("Dependencies missing"))
-  expect(opened).toContain("2 missing")
-  expect(opened).toContain("LarpCode settings")
+    await setup.mockMouse.click(column, row)
+    const opened = await setup.waitForFrame((frame) => frame.includes("Dependencies missing"))
+    expect(opened).toContain("2 missing")
+    expect(opened).toContain("LarpCode settings")
 
-  await setup.mockInput.typeText("Auto JB")
-  await setup.waitForFrame((frame) => frame.includes("Auto JB") && !frame.includes("Dependencies missing"))
-  setup.mockInput.pressEnter()
-  await setup.waitFor(() => rendered.toggles.length === 1)
-  expect(rendered.toggles).toEqual(["?enabled=1"])
-  await setup.waitForFrame((frame) => frame.split("\n").some((line) => /Auto JB\s+on$/.test(line.trimEnd())))
+    await setup.mockInput.typeText("Auto JB")
+    await setup.waitForFrame((frame) => frame.includes("Auto JB") && !frame.includes("Dependencies missing"))
+    setup.mockInput.pressEnter()
+    await setup.waitFor(() => rendered.toggles.length === 1)
+    expect(rendered.toggles).toEqual(["?enabled=1"])
+    await setup.waitForFrame((frame) => frame.split("\n").some((line) => /Auto JB\s+on$/.test(line.trimEnd())))
 
-  setup.mockInput.pressArrow("left")
-  await setup.waitFor(() => rendered.toggles.length === 2)
-  expect(rendered.toggles.at(-1)).toBe("?enabled=0")
-  await setup.waitForFrame((frame) => frame.split("\n").some((line) => /Auto JB\s+off$/.test(line.trimEnd())))
+    setup.mockInput.pressArrow("left")
+    await setup.waitFor(() => rendered.toggles.length === 2)
+    expect(rendered.toggles.at(-1)).toBe("?enabled=0")
+    await setup.waitForFrame((frame) => frame.split("\n").some((line) => /Auto JB\s+off$/.test(line.trimEnd())))
 
-  setup.mockInput.pressArrow("right")
-  await setup.waitFor(() => rendered.toggles.length === 3)
-  expect(rendered.toggles.at(-1)).toBe("?enabled=1")
-  await setup.waitForFrame((frame) => frame.split("\n").some((line) => /Auto JB\s+on$/.test(line.trimEnd())))
+    setup.mockInput.pressArrow("right")
+    await setup.waitFor(() => rendered.toggles.length === 3)
+    expect(rendered.toggles.at(-1)).toBe("?enabled=1")
+    await setup.waitForFrame((frame) => frame.split("\n").some((line) => /Auto JB\s+on$/.test(line.trimEnd())))
 
-  setup.mockInput.pressEscape()
-  await setup.mockInput.typeText("/larpcode:settings")
-  setup.mockInput.pressEnter()
-  await setup.waitForFrame((frame) => frame.includes("Dependencies missing"))
+    setup.mockInput.pressEscape()
+    await setup.mockInput.typeText("/larpcode:settings")
+    setup.mockInput.pressEnter()
+    await setup.waitForFrame((frame) => frame.includes("Dependencies missing"))
 
-  await setup.mockInput.typeText("Reset usage")
-  await setup.waitForFrame((frame) => frame.includes("Reset usage limits"))
-  setup.mockInput.pressEnter()
-  await setup.waitForFrame((frame) => frame.includes("Sessions are kept"))
-  setup.mockInput.pressEnter()
-  await setup.waitFor(() => rendered.resets.length === 1)
-  expect(rendered.resets).toEqual([""])
-}, 30_000)
+    await setup.mockInput.typeText("Reset usage")
+    await setup.waitForFrame((frame) => frame.includes("Reset usage limits"))
+    setup.mockInput.pressEnter()
+    await setup.waitForFrame((frame) => frame.includes("Sessions are kept"))
+    setup.mockInput.pressEnter()
+    await setup.waitFor(() => rendered.resets.length === 1)
+    expect(rendered.resets).toEqual([""])
+  }, 30_000)
 
-test("an explicit model-specific Auto JB profile is saved and shown in the menu", async () => {
-  await using state = await tmpdir()
-  const rendered = await render(state.path)
-  await using setup = rendered.setup
+  test(`${platform.name}: an explicit model-specific Auto JB profile is saved and shown in the menu`, async () => {
+    await using state = await tmpdir()
+    const rendered = await render(state.path, platform)
+    await using setup = rendered.setup
 
-  await setup.waitForFrame((frame) => frame.includes("LarpCode session"))
-  const marked = await setup.waitForFrame((frame) => frame.includes("⚙!"))
-  const row = marked.split("\n").findIndex((line) => line.includes("⚙!"))
-  const column = marked.split("\n")[row]!.indexOf("⚙!") + 1
-  await setup.mockMouse.click(column, row)
+    await setup.waitForFrame((frame) => frame.includes("LarpCode session"))
+    const marked = await setup.waitForFrame((frame) => frame.includes("⚙!"))
+    const row = marked.split("\n").findIndex((line) => line.includes("⚙!"))
+    const column = marked.split("\n")[row]!.indexOf("⚙!") + 1
+    await setup.mockMouse.click(column, row)
 
-  await setup.waitForFrame((frame) => frame.includes("Dependencies missing"))
-  await setup.mockInput.typeText("JB profile")
-  await setup.waitForFrame((frame) => frame.includes("JB profile"))
-  setup.mockInput.pressEnter()
-  await setup.waitForFrame((frame) => frame.includes("Auto JB profile"))
+    await setup.waitForFrame((frame) => frame.includes("Dependencies missing"))
+    await setup.mockInput.typeText("JB profile")
+    await setup.waitForFrame((frame) => frame.includes("JB profile"))
+    setup.mockInput.pressEnter()
+    await setup.waitForFrame((frame) => frame.includes("Auto JB profile"))
 
-  await setup.mockInput.typeText("DeepSeek")
-  await setup.waitForFrame((frame) => frame.includes("Model-specific · DeepSeek V4.1"))
-  setup.mockInput.pressEnter()
+    await setup.mockInput.typeText("DeepSeek")
+    await setup.waitForFrame((frame) => frame.includes("Model-specific · DeepSeek V4.1"))
+    setup.mockInput.pressEnter()
 
-  await setup.waitFor(() => rendered.profilesSaved.length === 1)
-  expect(rendered.profilesSaved).toEqual([{ profile: "deepseek" }])
-  await setup.waitForFrame((frame) =>
-    frame.split("\n").some((line) => /JB profile\s+DeepSeek V4\.1$/.test(line.trimEnd())),
-  )
-}, 30_000)
+    await setup.waitFor(() => rendered.profilesSaved.length === 1)
+    expect(rendered.profilesSaved).toEqual([{ profile: "deepseek" }])
+    await setup.waitForFrame((frame) =>
+      frame.split("\n").some((line) => /JB profile\s+DeepSeek V4\.1$/.test(line.trimEnd())),
+    )
+  }, 30_000)
 
-test("a fallback event shows the provider notice and records the last fallback", async () => {
-  await using state = await tmpdir()
-  const rendered = await render(state.path)
-  await using setup = rendered.setup
+  test(`${platform.name}: a fallback event shows the provider notice and records the last fallback`, async () => {
+    await using state = await tmpdir()
+    const rendered = await render(state.path, platform)
+    await using setup = rendered.setup
 
-  await setup.waitForFrame((frame) => frame.includes("LarpCode session"))
-  const at = Date.now()
-  rendered.setFreeRoute({ cooling: false, lastFallback: { provider: "pollinations", at } })
-  setup.events.emit({
-    id: "evt_larpcode_fallback",
-    created: at,
-    type: "larpcode.fallback.used",
-    data: { provider: "pollinations", at },
-  })
+    await setup.waitForFrame((frame) => frame.includes("LarpCode session"))
+    const at = Date.now()
+    rendered.setFreeRoute({ cooling: false, lastFallback: { provider: "pollinations", at } })
+    setup.events.emit({
+      id: "evt_larpcode_fallback",
+      created: at,
+      type: "larpcode.fallback.used",
+      data: { provider: "pollinations", at },
+    })
 
-  await setup.waitForFrame((frame) => frame.includes("Fallback in use") && frame.includes("Pollinations"))
+    await setup.waitForFrame((frame) => frame.includes("Fallback in use") && frame.includes("Pollinations"))
 
-  const marked = await setup.waitForFrame((frame) => frame.includes("⚙!"))
-  const row = marked.split("\n").findIndex((line) => line.includes("⚙!"))
-  const column = marked.split("\n")[row]!.indexOf("⚙!") + 1
-  await setup.mockMouse.click(column, row)
-  await setup.waitForFrame((frame) => frame.includes("LarpCode settings"))
-  await setup.mockInput.typeText("Last fallback")
-  await setup.waitForFrame((frame) => frame.includes("Last fallback") && frame.includes("pollinations"))
-}, 30_000)
+    const marked = await setup.waitForFrame((frame) => frame.includes("⚙!"))
+    const row = marked.split("\n").findIndex((line) => line.includes("⚙!"))
+    const column = marked.split("\n")[row]!.indexOf("⚙!") + 1
+    await setup.mockMouse.click(column, row)
+    await setup.waitForFrame((frame) => frame.includes("LarpCode settings"))
+    await setup.mockInput.typeText("Last fallback")
+    await setup.waitForFrame((frame) => frame.includes("Last fallback") && frame.includes("pollinations"))
+  }, 30_000)
+
+  test(`${platform.name}: the settings menu uses this platform's dependency fixture`, async () => {
+    await using state = await tmpdir()
+    const rendered = await render(state.path, platform)
+    await using setup = rendered.setup
+
+    await setup.waitForFrame((frame) => frame.includes("LarpCode session"))
+    const marked = await setup.waitForFrame((frame) => frame.includes("⚙!"))
+    const row = marked.split("\n").findIndex((line) => line.includes("⚙!"))
+    const column = marked.split("\n")[row]!.indexOf("⚙!") + 1
+    await setup.mockMouse.click(column, row)
+    await setup.waitForFrame((frame) => frame.includes("Dependencies missing"))
+
+    const data = rendered.settings()!
+    expect(data.settingsPath).toBe(platform.settingsPath)
+    expect(data.dependencies.map((dependency) => dependency.name)).toEqual([
+      "Cloudflare WARP",
+      "Tor",
+      "curl-impersonate",
+    ])
+    expect(data.missing).toBe(2)
+    // Windows probes a .exe under Program Files; macOS resolves warp-cli on PATH
+    // and ships POSIX-named tor/curl-impersonate binaries with no .exe suffix.
+    expect(data.dependencies[0]!.detail.includes("warp-cli.exe")).toBe(platform.name === "windows")
+    expect(data.dependencies.some((dependency) => dependency.path?.endsWith(".exe"))).toBe(
+      platform.name === "windows",
+    )
+  }, 30_000)
+}

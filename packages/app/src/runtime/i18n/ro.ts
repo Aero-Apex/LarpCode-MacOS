@@ -678,7 +678,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} de alți colaboratori",
   "settings.about.firstPublished": "Prima dată publicată în Missouri, SUA",
   "settings.about.firstIllustrated": "Ilustrat pentru prima dată la Londra, Anglia",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, agentul de codare open source",
   "settings.about.typeset": "Compoziție în Inter și IBM Plex Mono",
   "settings.about.tagline": "AI nu poate construi un software grozav fără tine",

@@ -114,16 +114,17 @@ export function LarpcodeUpdateFab() {
       setTimeout(() => setErr(undefined), 5000)
       return
     }
-    // On ok: the main process spawned the installer + will app.quit() in ~800ms.
+    // On ok: the main process installed the update + will app.quit() shortly.
     // The pill stays in "Installing…" state until the window dies. If the
-    // process is STILL alive 15s later, the installer never actually started
-    // (UAC denied after the pid came back, antivirus intercept, Inno Setup
-    // silent-exit on a version check). Surface a real error instead of
-    // leaving the user staring at "Installing…" forever.
+    // process is STILL alive 15s later, the DMG never actually opened
+    // (macOS Gatekeeper blocked the unsigned app, quarantine attributes on a
+    // freshly downloaded DMG, or permissions denied after the pid came back).
+    // Surface a real error instead of leaving the user staring at
+    // "Installing…" forever.
     setTimeout(() => {
       if (installing()) {
         setInstalling(false)
-        setErr("install didn't finish — try again, or check UAC / antivirus")
+        setErr("installer could not finish — try again, or check macOS security settings")
         setTimeout(() => setErr(undefined), 8000)
       }
     }, 15000)

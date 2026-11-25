@@ -1,5 +1,7 @@
 # Starlight Starter Kit: Basics
 
+> **Note:** This repository is the macOS edition of LarpCode, ported from the Windows-only upstream. This docs site describes LarpCode macOS install and update behavior — desktop DMG/ZIP installs, the standalone `larpcode` CLI, and in-app updates via `update.json`. Release links point to this repository's releases, not the upstream Windows installer.
+
 [![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
 
 ```

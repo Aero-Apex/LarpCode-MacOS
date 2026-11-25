@@ -212,9 +212,13 @@ export default Runtime.handler(
         log.info(`  Remove-Item -LiteralPath ${psQuote(standalone.root)} -Recurse -Force`)
         log.info(`  Remove-Item -LiteralPath ${psQuote(standalone.bin)} -Force`)
       }
-    } else if (method === "standalone") {
+    } else if (method === "standalone" && process.platform === "win32") {
       log.message("This standalone binary was not installed by install-cli.ps1. Remove it manually:")
       log.info(`  Remove-Item -LiteralPath ${psQuote(process.execPath)} -Force`)
+    } else if (method === "standalone") {
+      log.message("To finish removing the CLI, delete the larpcode binary or symlink and remove its PATH line:")
+      log.info(`  rm '${process.execPath.replaceAll("'", "'\\''")}'`)
+      log.info(`  Remove the export PATH="$HOME/.larpcode/bin:$PATH" line from ~/.zshrc or ~/.bashrc.`)
     }
     if (errors.length) yield* Effect.fail(new Error(errors.join("\n")))
     outro("Done")

@@ -58,14 +58,14 @@ const desktopUpdate = () =>
     title: "LarpCode updates through the desktop app",
     detail:
       "This CLI was installed with the LarpCode desktop app. Use the app's update prompt, or download and run the latest LarpCode installer.",
-    command: "https://github.com/Tazmyan/LarpCode/releases/latest",
+    command: "https://github.com/Aero-Apex/LarpCode-MacOS/releases/latest",
     retry: "Install the new version, then open a new terminal.",
   })
 
 const standaloneManifestUrl = (version?: string) =>
   version
-    ? `https://github.com/Tazmyan/LarpCode/releases/download/v${encodeURIComponent(version)}/cli.json`
-    : "https://github.com/Tazmyan/LarpCode/releases/latest/download/cli.json"
+    ? `https://github.com/Aero-Apex/LarpCode-MacOS/releases/download/v${encodeURIComponent(version)}/cli.json`
+    : "https://github.com/Aero-Apex/LarpCode-MacOS/releases/latest/download/cli.json"
 
 const standaloneAssetKey = `${process.platform}-${process.arch}`
 
@@ -528,7 +528,7 @@ const make = Effect.gen(function* () {
         new UpgradeError({
           title: `LarpCode ${version} is not available`,
           detail: `The release tagged v${version} published CLI version ${manifest.version}.`,
-          command: "https://github.com/Tazmyan/LarpCode/releases",
+          command: "https://github.com/Aero-Apex/LarpCode-MacOS/releases",
           retry: "Choose a version from the releases page, then run larpcode upgrade again.",
         }),
       )
@@ -546,7 +546,7 @@ const make = Effect.gen(function* () {
         new UpgradeError({
           title: `LarpCode ${version} does not support this platform`,
           detail: `No CLI download is published for ${standaloneAssetKey}.`,
-          command: "https://github.com/Tazmyan/LarpCode/releases",
+          command: "https://github.com/Aero-Apex/LarpCode-MacOS/releases",
           retry: "Download a release that matches your operating system and architecture.",
         }),
       )
@@ -560,7 +560,7 @@ const make = Effect.gen(function* () {
           {
             title: "Could not download the LarpCode CLI",
             detail: errorDetail(cause),
-            command: "https://github.com/Tazmyan/LarpCode/releases",
+            command: "https://github.com/Aero-Apex/LarpCode-MacOS/releases",
             retry: "Check your network, then run larpcode upgrade again.",
           },
           { cause },
@@ -571,7 +571,7 @@ const make = Effect.gen(function* () {
         new UpgradeError({
           title: "Could not download the LarpCode CLI",
           detail: `The release download returned HTTP ${response.status}.`,
-          command: "https://github.com/Tazmyan/LarpCode/releases",
+          command: "https://github.com/Aero-Apex/LarpCode-MacOS/releases",
           retry: "Try again in a few minutes.",
         }),
       )
@@ -593,7 +593,7 @@ const make = Effect.gen(function* () {
         new UpgradeError({
           title: "The LarpCode CLI download did not match its checksum",
           detail: "The downloaded file was incomplete or had been modified.",
-          command: "https://github.com/Tazmyan/LarpCode/releases",
+          command: "https://github.com/Aero-Apex/LarpCode-MacOS/releases",
           retry: "Download the release again from the official releases page.",
         }),
       )
@@ -613,7 +613,6 @@ const make = Effect.gen(function* () {
       ),
     )
     if (process.platform !== "win32") {
-      yield* fs.chmod(download, 0o755).pipe(Effect.ignore)
       yield* fs.rename(download, executable).pipe(
         Effect.mapError(
           (cause) =>
@@ -627,6 +626,9 @@ const make = Effect.gen(function* () {
             ),
         ),
       )
+      yield* fs.chmod(executable, 0o755).pipe(Effect.ignore)
+      if (process.platform === "darwin")
+        yield* exec(["xattr", "-d", "com.apple.quarantine", executable]).pipe(Effect.ignore)
     } else {
       const backup = `${executable}.old-${process.pid}`
       yield* fs.rename(executable, backup).pipe(

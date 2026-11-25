@@ -36,105 +36,19 @@ To use OpenCode in your terminal, you'll need:
 
 ## Install
 
-The easiest way to install OpenCode 1 is through the install script. These installation methods provide the `opencode`
-binary and can conflict with or replace an OpenCode 2 installation.
+LarpCode macOS is a community fork of OpenCode for macOS 13 or later (Apple Silicon and Intel). For general usage, see the [upstream OpenCode docs](https://opencode.ai/docs/).
 
-```bash
-curl -fsSL https://opencode.ai/install | bash
-```
+- **Desktop app (DMG)**: Download the DMG from this repo's [Releases](https://github.com/Aero-Apex/LarpCode-MacOS/releases), open it, and drag LarpCode to Applications.
 
-You can also install it with the following commands:
-
-- **Using Node.js**
-
-        <Tabs>
-
-      <TabItem label="npm">
-      ```bash
-      npm install -g opencode-ai
-      ```
-
-          </TabItem>
-
-        <TabItem label="Bun">
-        ```bash
-        bun install -g opencode-ai
-        ```
-
-          </TabItem>
-
-        <TabItem label="pnpm">
-        ```bash
-        pnpm install -g opencode-ai
-        ```
-
-          </TabItem>
-
-        <TabItem label="Yarn">
-        ```bash
-        yarn global add opencode-ai
-        ```
-
-      </TabItem>
-
-  </Tabs>
-
-- **Using Homebrew on macOS and Linux**
+- **CLI only**: Install the `larpcode` command with:
 
   ```bash
-  brew install anomalyco/tap/opencode
+  curl -fsSL https://github.com/Aero-Apex/LarpCode-MacOS/releases/latest/download/install-cli.sh | bash
   ```
 
-  > Use the OpenCode tap above for V1. Homebrew's `brew install opencode` formula currently installs V2. See the [V2 docs](https://opencode.ai/docs/).
-
-- **Installing on Arch Linux**
-
-  ```bash
-  sudo pacman -S opencode           # Arch Linux (OpenCode 2)
-  paru -S opencode-bin              # Arch Linux (OpenCode 1, from AUR)
-  ```
-
-  The official Arch package installs OpenCode 2. Use the AUR package to install OpenCode 1.
-
-#### Windows
-
-:::tip[Recommended: Use WSL]
-For the best experience on Windows, we recommend using [Windows Subsystem for Linux (WSL)](/docs/windows-wsl). It provides better performance and full compatibility with OpenCode's features.
+:::note
+Release binaries are unsigned and not notarized. If macOS blocks the app, right-click it and choose **Open**, or clear the quarantine flag with `xattr -dr com.apple.quarantine <path-to-app>`.
 :::
-
-- **Using Chocolatey**
-
-  ```bash
-  choco install opencode
-  ```
-
-- **Using Scoop**
-
-  ```bash
-  scoop install opencode
-  ```
-
-- **Using NPM**
-
-  ```bash
-  npm install -g opencode-ai
-  ```
-
-- **Using Mise**
-
-  ```bash
-  mise use -g github:anomalyco/opencode
-  ```
-
-- **Using Docker**
-
-  ```bash
-  docker run -it --rm ghcr.io/anomalyco/opencode
-  ```
-
-Support for installing OpenCode on Windows using Bun is currently in progress.
-
-You can also grab the binary from the [Releases](https://github.com/anomalyco/opencode/releases).
 
 ---
 

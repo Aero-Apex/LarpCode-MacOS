@@ -749,7 +749,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} diğerleri",
   "settings.about.firstPublished": "İlk olarak Missouri, ABD'de yayınlandı",
   "settings.about.firstIllustrated": "İlk kez Londra, İngiltere'de resmedildi",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, açık kaynak kodlama aracısı",
   "settings.about.typeset": "Inter ve IBM Plex Mono'da dizgi",
   "settings.about.tagline": "Yapay zeka siz olmadan mükemmel yazılım geliştiremez",

@@ -188,7 +188,7 @@ export const SettingsAppearance: Component = () => {
               description={
                 <>
                   {language.t("settings.general.row.theme.description")}{" "}
-                  <ExternalLink class="settings-link" href="https://github.com/Tazmyan/LarpCode#readme">
+                  <ExternalLink class="settings-link" href="https://github.com/Aero-Apex/LarpCode-MacOS#readme">
                     {language.t("common.learnMore")}
                   </ExternalLink>
                 </>

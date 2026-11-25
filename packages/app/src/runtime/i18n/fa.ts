@@ -685,7 +685,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} نفر دیگر",
   "settings.about.firstPublished": "نخستین انتشار در \u2068Missouri, USA\u2069",
   "settings.about.firstIllustrated": "نخستین تصویرسازی در \u2068London, England\u2069",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "\u2068LarpCode\u2069، عامل کدنویسی متن‌باز",
   "settings.about.typeset": "حروف‌چینی با \u2068Inter\u2069 و \u2068IBM Plex Mono\u2069",
   "settings.about.tagline": "هوش مصنوعی بدون شما نمی‌تواند نرم‌افزار عالی بسازد",

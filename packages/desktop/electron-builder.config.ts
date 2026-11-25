@@ -42,20 +42,20 @@ function resolveChannel() {
 }
 
 const APP_IDS = {
-  dev: "ai.larpcode.desktop.dev",
-  beta: "ai.larpcode.desktop.beta",
-  prod: "ai.larpcode.desktop",
+  dev: "ai.larpcode.desktop.macos.dev",
+  beta: "ai.larpcode.desktop.macos.beta",
+  prod: "ai.larpcode.desktop.macos",
 } as const
 
 // libappimage (used by AppImageLauncher) resolves the .desktop entry inside an
 // AppImage by globbing `*.desktop` at the squashfs root. If the main
-// executable itself ends in `.desktop` (prod appId `ai.larpcode.desktop`), the
-// ELF binary matches the glob and is parsed as a desktop entry, so
+// executable itself ends in `.desktop`, the ELF binary matches the glob and is
+// parsed as a desktop entry, so
 // integration fails with `Malformed desktop entry: Unexpected char '\x7f' at 0`
 // (0x7F is the first byte of the ELF magic).
 // https://github.com/anomalyco/opencode/issues/51867
 // Strip a trailing `.desktop` so the executable can never collide with the
-// desktop-entry glob. Beta/dev appIds end in `.beta`/`.dev` and are unaffected.
+// desktop-entry glob. The macOS app ids end in `.macos`/`.beta`/`.dev`, so none collide today.
 function linuxExecutableName(appId: string): string {
   return appId.replace(/\.desktop$/, "")
 }
@@ -65,14 +65,14 @@ const getBase = (appId: string): Configuration => {
   const desktopName = `${appId}.desktop`
 
   return {
-    artifactName: "larpcode-desktop-${os}-${arch}.${ext}",
+    artifactName: "LarpCode-macOS-${os}-${arch}.${ext}",
     directories: {
       output: "dist",
       buildResources: "resources",
     },
     // Linux launchers are .desktop files, so this is the desktop file name,
-    // not just the app id. For prod, app id "ai.larpcode.desktop" becomes
-    // "ai.larpcode.desktop.desktop".
+    // not just the app id. For prod, app id "ai.larpcode.desktop.macos" becomes
+    // "ai.larpcode.desktop.macos.desktop".
     // https://developer.gnome.org/documentation/guidelines/maintainer/integrating.html
     // https://www.electron.build/docs/linux/
     // Release builds take their version from OPENCODE_VERSION instead of rewriting package.json.
@@ -113,16 +113,21 @@ const getBase = (appId: string): Configuration => {
       const arch = Arch[context.arch]
 
       // The --arm64 flag picks Electron while OPENCODE_TARGET picks the CLI and node-pty, so they can disagree.
-      if (arch !== "x64" && arch !== "arm64") throw new Error(`Unsupported desktop architecture: ${arch}`)
+      // Universal builds have no single native slice to pair with the CLI, so the strict checks below only
+      // apply to thin x64/arm64 builds.
+      if (arch !== "x64" && arch !== "arm64" && arch !== "universal")
+        throw new Error(`Unsupported desktop architecture: ${arch}`)
 
-      if (arch !== target.cpu) throw new Error(`Packaging ${arch} Electron with the ${target.target} CLI`)
+      if (arch !== "universal" && arch !== target.cpu)
+        throw new Error(`Packaging ${arch} Electron with the ${target.target} CLI`)
       const resources = context.packager.getResourcesDir(context.appOutDir)
       const cli = path.join(resources, context.electronPlatformName === "win32" ? "opencode-cli.exe" : "opencode-cli")
 
       const file = await stat(cli)
 
       if (!file.isFile() || file.size === 0) throw new Error(`Bundled CLI must be a non-empty file: ${cli}`)
-      await NativeArch.verify(cli, arch)
+      // A universal bundle still needs a usable CLI, but it has no single expected native architecture.
+      if (arch !== "universal") await NativeArch.verify(cli, arch)
       const version = path.join(path.dirname(cli), "opencode-cli.version")
 
       if ((await stat(version)).size === 0) throw new Error(`Bundled CLI version must be a non-empty file: ${version}`)
@@ -153,12 +158,17 @@ const getBase = (appId: string): Configuration => {
           .map(async (entry) => {
             const file = path.join(entry.parentPath, entry.name)
 
-            if (await NativeArch.isNative(file)) await NativeArch.verify(file, arch)
+            if (arch !== "universal" && (await NativeArch.isNative(file))) await NativeArch.verify(file, arch)
           }),
       )
     },
     mac: {
       category: "public.app-category.developer-tools",
+      // Override the cross-platform template so DMG/ZIP names match the PORT_SPEC.md assets
+      // (`LarpCode-macOS-arm64.dmg`, `LarpCode-macOS-universal.zip`, ...).
+      artifactName: "LarpCode-macOS-${arch}.${ext}",
+      // Hardened runtime entitlements are applied by script/macos/notarize.ts after packaging. Keep this
+      // config free of sign/notarize options so secretless builds still succeed.
       icon: `resources/icons/icon.icns`,
       extendInfo: {
         NSMicrophoneUsageDescription: DESKTOP_NATIVE_ENGLISH["desktop.microphoneUsage"],
@@ -174,7 +184,7 @@ const getBase = (appId: string): Configuration => {
       target: ["dmg", "zip"],
     },
     protocols: {
-      name: "LarpCode",
+      name: "LarpCode macOS",
       schemes: ["opencode"],
     },
     win: {
@@ -194,7 +204,7 @@ const getBase = (appId: string): Configuration => {
       category: "Development",
       executableName: linuxExecutableName(appId),
       // Derive the installed `.desktop` filename from `desktopName`
-      // (`ai.larpcode.desktop.desktop` for prod) instead of `executableName`,
+      // (`ai.larpcode.desktop.macos.desktop` for prod) instead of `executableName`,
       // so window association is unaffected by the executable rename above.
       syncDesktopName: true,
       desktop: {
@@ -219,10 +229,10 @@ export function getConfig() {
       return {
         ...base,
         appId,
-        productName: "LarpCode Dev",
+        productName: "LarpCode macOS Dev",
         publish: {
           provider: "generic",
-          url: "https://github.com/Tazmyan/LarpCode/releases/latest/download/",
+          url: "https://github.com/Aero-Apex/LarpCode-MacOS/releases/latest/download/",
           channel: "latest",
         },
         deb: { fpm: [...previewCompressionFpm("deb"), metainfoFpm(appId)] },
@@ -237,11 +247,10 @@ export function getConfig() {
       return {
         ...base,
         appId,
-        productName: "LarpCode Beta",
-        protocols: { name: "LarpCode Beta", schemes: ["opencode"] },
+        productName: "LarpCode macOS Beta",
         publish: {
           provider: "generic",
-          url: "https://github.com/Tazmyan/LarpCode/releases/latest/download/",
+          url: "https://github.com/Aero-Apex/LarpCode-MacOS/releases/latest/download/",
           channel: "latest",
         },
         deb: { fpm: [...previewCompressionFpm("deb"), metainfoFpm(appId)] },
@@ -256,8 +265,7 @@ export function getConfig() {
       return {
         ...base,
         appId,
-        productName: "LarpCode",
-        protocols: { name: "LarpCode", schemes: ["opencode"] },
+        productName: "LarpCode macOS",
         // An Icon Composer package compiles to Assets.car, which macOS 26 and later draw the app icon from
         // (Dock, Finder, system dialogs and the system icon styles). Older macOS keeps using the ICNS.
         mac: { ...base.mac, icon: "resources/icons/icon.icon" },
@@ -265,7 +273,7 @@ export function getConfig() {
         dmg: { icon: "resources/icons/icon.icns" },
         publish: {
           provider: "generic",
-          url: "https://github.com/Tazmyan/LarpCode/releases/latest/download/",
+          url: "https://github.com/Aero-Apex/LarpCode-MacOS/releases/latest/download/",
           channel: "latest",
         },
         deb: { fpm: [metainfoFpm(appId), legacyDesktopEntryFpm] },

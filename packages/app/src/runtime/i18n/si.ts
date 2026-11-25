@@ -671,7 +671,7 @@ export const dict = {
   "settings.about.otherContributor.other": "තවත් {{count}}",
   "settings.about.firstPublished": "මුලින්ම ඇමරිකා එක්සත් ජනපදයේ මිසූරිහි ප්‍රකාශයට පත් කරන ලදී",
   "settings.about.firstIllustrated": "මුලින්ම එංගලන්තයේ ලන්ඩන්හි රූප සටහන් කරන ලදී",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, විවෘත මූලාශ්‍ර කේතකරණ නියෝජිතයා",
   "settings.about.typeset": "Inter සහ IBM Plex Mono අකුරුවලින් සකසා ඇත",
   "settings.about.tagline": "ඔබ නොමැතිව AI හට විශිෂ්ට මෘදුකාංග තැනිය නොහැක",

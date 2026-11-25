@@ -6,8 +6,8 @@ import path from "node:path"
 // URL is compiled into the signed main bundle and is the only value the IPC
 // handler will open. Editing the renderer cannot redirect this link; editing
 // this file invalidates the Ed25519 manifest and the watchdog exits the app.
-export const WEBSITE_URL = "https://github.com/Tazmyan/LarpCode"
-export const WEBSITE_LABEL = "LarpCode on GitHub"
+export const WEBSITE_URL = "https://github.com/Aero-Apex/LarpCode-MacOS"
+export const WEBSITE_LABEL = "LarpCode macOS on GitHub"
 export const WEBSITE_CHANNEL = "larpcode:open-website"
 
 export function registerBrand(): void {

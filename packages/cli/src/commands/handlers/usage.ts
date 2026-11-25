@@ -152,7 +152,7 @@ function renderUsage(
       `  ${metric(stats.sessions, "session", options.color)} · ${metric(stats.prompts, "prompt", options.color)} · ${metric(TokenUsage.total(stats.tokens), "token", options.color)} · ${metric(stats.activeDays, "active day", options.color)} · best streak ${style(stats.streak.toString(), `1;${primary}`, options.color)} day${stats.streak === 1 ? "" : "s"}`,
       `  ${style(sparkline(stats, options.days), primary, options.color)}`,
       "",
-      `  ${style("github.com/Tazmyan/LarpCode", "2", options.color)}`,
+      `  ${style("github.com/Aero-Apex/LarpCode-MacOS", "2", options.color)}`,
     )
 
   return lines.join(EOL)

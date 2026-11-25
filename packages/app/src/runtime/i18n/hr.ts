@@ -684,7 +684,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} drugih",
   "settings.about.firstPublished": "Prvi put objavljeno u Missouriju, SAD",
   "settings.about.firstIllustrated": "Prvi put ilustrirano u Londonu, Engleska",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, agent za kodiranje otvorenog koda",
   "settings.about.typeset": "Označeno u Inter i IBM Plex Mono",
   "settings.about.tagline": "AI ne može izgraditi odličan softver, bez vas",

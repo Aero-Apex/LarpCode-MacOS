@@ -1237,7 +1237,7 @@ function App() {
         name: "docs.open",
         title: "Open docs",
         run: () => {
-          openUrl("https://github.com/Tazmyan/LarpCode#readme").catch(() => {})
+          openUrl("https://github.com/Aero-Apex/LarpCode-MacOS#readme").catch(() => {})
           dialog.clear()
         },
         category: "System",

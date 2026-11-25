@@ -8,7 +8,8 @@ import { dirname as pathDirname, join as pathJoin, resolve as pathResolve } from
 
 // LarpCode portable Tor manager.
 //
-// Bundled tor.exe + geoip ship under {install}\deps\tor\. On first reset click,
+// Bundled tor + geoip ship under deps/tor/ (tor.exe under {install}\deps\tor\ on
+// Windows, tor under deps/tor/ on macOS). On first reset click,
 // ensureTor() writes a torrc, launches tor as a background child, and waits
 // for the "Bootstrapped 100%" line in stdout. Subsequent reset clicks skip the
 // launch and just send SIGNAL NEWNYM via the control port — new circuit
@@ -27,11 +28,12 @@ export function torDataDir(): string {
   return pathJoin(data, "opencode", "tor")
 }
 
-// Find the bundled tor.exe. In an installed build it lives at
-// <install>\deps\tor\tor.exe next to desktop-pkg/. The sidecar runs as
-// opencode-cli.exe under desktop-pkg\resources, so we walk up from
-// process.execPath until we find a sibling deps/tor/tor.exe. In dev the
-// fallback is the repo path installer-stage/deps/tor/tor.exe.
+// Find the bundled tor binary. In an installed build it lives at
+// <install>\deps\tor\tor.exe on Windows or deps/tor/tor on macOS, next to
+// desktop-pkg/. The sidecar runs as opencode-cli.exe under
+// desktop-pkg\resources on Windows or opencode-cli on macOS, so we walk up from
+// process.execPath until we find a sibling deps/tor/<bin>. In dev the fallback
+// is the repo path installer-stage/deps/tor/<bin>.
 export function torBinaryPath(): string | null {
   const binName = process.platform === "win32" ? "tor.exe" : "tor"
   // Walk up from execPath looking for deps/tor/<bin>.

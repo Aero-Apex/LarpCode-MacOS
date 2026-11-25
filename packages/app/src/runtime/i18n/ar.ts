@@ -723,7 +723,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} مساهم آخر",
   "settings.about.firstPublished": "نُشر أول مرة في \u2068Missouri, USA\u2069",
   "settings.about.firstIllustrated": "رُسم أول مرة في \u2068London, England\u2069",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "\u2068LarpCode\u2069، وكيل البرمجة مفتوح المصدر",
   "settings.about.typeset": "منضّد بخطي \u2068Inter\u2069 و\u2068IBM Plex Mono\u2069",
   "settings.about.tagline": "لا يستطيع الذكاء الاصطناعي بناء برمجيات رائعة من دونك",

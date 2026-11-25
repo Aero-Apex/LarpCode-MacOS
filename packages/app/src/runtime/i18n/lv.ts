@@ -678,7 +678,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} citi",
   "settings.about.firstPublished": "Pirmo reizi publicēts Misūri štatā, ASV",
   "settings.about.firstIllustrated": "Pirmo reizi ilustrēts Londonā, Anglijā",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, atvērtā koda kodēšanas aģents",
   "settings.about.typeset": "Salikums Inter un IBM Plex Mono",
   "settings.about.tagline": "AI nevar izveidot lielisku programmatūru bez jums",

@@ -232,16 +232,17 @@ function locale(value: string) {
 const normalizeScript = (script?: string) => (script === "Aran" ? "Arab" : script)
 
 export const DESKTOP_NATIVE_ENGLISH = {
-  "desktop.microphoneUsage": "LarpCode uses your microphone for voice calls.",
+  "desktop.microphoneUsage": "LarpCode macOS uses your microphone for voice input.",
   "desktop.documentsFolderUsage":
-    "LarpCode uses files in your Documents folder for projects you open and commands you run there.",
-  "desktop.desktopFolderUsage": "LarpCode uses files on your Desktop for projects you open and commands you run there.",
+    "LarpCode macOS uses files in your Documents folder for projects you open and commands you run there.",
+  "desktop.desktopFolderUsage":
+    "LarpCode macOS uses files on your Desktop for projects you open and commands you run there.",
   "desktop.downloadsFolderUsage":
-    "LarpCode uses files in your Downloads folder for projects you open and commands you run there.",
+    "LarpCode macOS uses files in your Downloads folder for projects you open and commands you run there.",
   "desktop.networkVolumesUsage":
-    "LarpCode uses files on network volumes for projects you open and commands you run there.",
+    "LarpCode macOS uses files on external network volumes for projects you open and commands you run there.",
   "desktop.removableVolumesUsage":
-    "LarpCode uses files on removable volumes for projects you open and commands you run there.",
+    "LarpCode macOS uses files on external removable volumes for projects you open and commands you run there.",
   "desktop.menu.app": "LarpCode",
   "desktop.menu.file": "File",
   "desktop.menu.edit": "Edit",

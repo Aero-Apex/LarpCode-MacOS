@@ -682,7 +682,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} người khác",
   "settings.about.firstPublished": "Xuất bản lần đầu ở Missouri, Mỹ",
   "settings.about.firstIllustrated": "Minh họa đầu tiên ở London, Anh",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, tác nhân mã hóa nguồn mở",
   "settings.about.typeset": "Bộ sắp chữ trong Inter và IBM Plex Mono",
   "settings.about.tagline": "AI không thể xây dựng phần mềm tuyệt vời nếu không có bạn",

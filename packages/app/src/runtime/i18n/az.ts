@@ -678,7 +678,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} digər",
   "settings.about.firstPublished": "İlk dəfə Missuri, ABŞ-da nəşr olunub",
   "settings.about.firstIllustrated": "İlk dəfə London, İngiltərədə illüstrasiya olunub",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, açıq mənbəli kodlaşdırma agenti",
   "settings.about.typeset": "Inter və IBM Plex Mono şriftləri ilə tərtib olunub",
   "settings.about.tagline": "Siz olmadan AI möhtəşəm proqram təminatı yarada bilməz",

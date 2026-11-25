@@ -684,7 +684,7 @@ export const dict = {
   "settings.about.otherContributor.other": "\u2068{{count}}\u2069 ہور",
   "settings.about.firstPublished": "پہلی واری میزوری، امریکہ وچ شائع ہویا",
   "settings.about.firstIllustrated": "پہلی واری لندن، انگلینڈ وچ تصویراں بݨیاں",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode، اوپن سورس کوڈنگ ایجنٹ",
   "settings.about.typeset": "Inter تے IBM Plex Mono وچ ٹائپ سیٹ",
   "settings.about.tagline": "تہاڈے بغیر AI ودھیا سافٹ ویئر نئیں بݨا سکدا",

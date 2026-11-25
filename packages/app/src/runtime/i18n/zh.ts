@@ -733,7 +733,7 @@ export const dict = {
   "settings.about.otherContributor.other": "其他{{count}}人",
   "settings.about.firstPublished": "首次在美国密苏里州发布",
   "settings.about.firstIllustrated": "首次在英国伦敦展出",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode ，开源编码代理",
   "settings.about.typeset": "Inter和IBM Plex Mono中的排版",
   "settings.about.tagline": "没有您，人工智能无法构建出色的软件",

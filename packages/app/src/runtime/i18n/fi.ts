@@ -140,7 +140,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} muuta",
   "settings.about.firstPublished": "Julkaistu ensimmäisen kerran Missourissa, Yhdysvalloissa",
   "settings.about.firstIllustrated": "Kuvitettu ensimmäisen kerran Lontoossa, Englannissa",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, avoimen lähdekoodin koodausagentti",
   "settings.about.typeset": "Kirjasinlajit Inter ja IBM Plex Mono",
   "settings.about.tagline": "Tekoäly ei voi rakentaa erinomaista ohjelmistoa ilman sinua",

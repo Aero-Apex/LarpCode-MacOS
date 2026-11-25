@@ -1339,7 +1339,7 @@ test.describe("pages open before slow data", () => {
       await expect(settings.getByRole("link", { name: "935 others", exact: true })).toBeVisible()
       await expect(settings.getByRole("button", { name: "Back to app" })).toBeVisible()
 
-      const website = settings.getByRole("link", { name: "github.com/Tazmyan/LarpCode", exact: true })
+      const website = settings.getByRole("link", { name: "github.com/Aero-Apex/LarpCode-MacOS", exact: true })
       await website.focus()
 
       const settled = fails

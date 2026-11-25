@@ -672,7 +672,7 @@ export const dict = {
   "settings.about.otherContributor.other": "ອີກ {{count}} ຄົນ",
   "settings.about.firstPublished": "ພິມ​ເຜີຍ​ແຜ່​ຄັ້ງ​ທຳ​ອິດ​ຢູ່​ລັດ Missouri, ສະ​ຫະ​ລັດ",
   "settings.about.firstIllustrated": "ຮູບ​ພາບ​ຄັ້ງ​ທໍາ​ອິດ​ໃນ​ລອນ​ດອນ​, ປະ​ເທດ​ອັງ​ກິດ​",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, ຕົວແທນລະຫັດແຫຼ່ງເປີດ",
   "settings.about.typeset": "Typeset ໃນ Inter ແລະ IBM Plex Mono",
   "settings.about.tagline": "AI ບໍ່ສາມາດສ້າງຊອບແວທີ່ດີໄດ້, ຖ້າບໍ່ມີທ່ານ",

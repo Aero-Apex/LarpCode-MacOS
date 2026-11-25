@@ -1,0 +1,110 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check-docs-and-scripts:
+    name: check docs and scripts
+    runs-on: macos-14
+    timeout-minutes: 10
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - name: Verify VERSION is semver
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(tr -d '[:space:]' < VERSION)"
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+            echo "VERSION must be semver (x.y.z), got '$version'" >&2
+            exit 1
+          fi
+          echo "VERSION is valid semver: $version"
+
+      - name: Check shell script syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r -d '' file; do
+            bash -n "$file"
+            count=$((count + 1))
+          done < <(find . -path ./.git -prune -o -type f \( -name '*.sh' -o -name '*.command' \) -print0)
+          echo "bash -n passed for $count shell script(s)"
+
+      - name: Validate workflow YAML
+        shell: bash
+        run: |
+          set -euo pipefail
+          if python3 -c 'import yaml' >/dev/null 2>&1; then
+            python3 - <<'PY'
+          import glob
+          import sys
+          import yaml
+
+          files = sorted(set(glob.glob(".github/workflows/*.yml") + glob.glob(".github/workflows/*.yaml")))
+          if not files:
+              print("no workflow YAML files found", file=sys.stderr)
+              sys.exit(1)
+          for path in files:
+              with open(path, encoding="utf-8") as handle:
+                  yaml.safe_load(handle)
+              print(f"yaml ok: {path}")
+          PY
+          elif command -v ruby >/dev/null 2>&1; then
+            ruby -ryaml -e '
+          files = Dir[".github/workflows/*.{yml,yaml}"].sort
+          abort "no workflow YAML files found" if files.empty?
+          files.each { |f| YAML.load_file(f); puts "yaml ok: #{f}" }
+          '
+          else
+            python3 - <<'PY'
+          # Dependency-free fallback: reject tabs and unterminated flow scalars.
+          import glob
+          import sys
+
+          files = sorted(set(glob.glob(".github/workflows/*.yml") + glob.glob(".github/workflows/*.yaml")))
+          if not files:
+              print("no workflow YAML files found", file=sys.stderr)
+              sys.exit(1)
+          for path in files:
+              with open(path, encoding="utf-8") as handle:
+                  for lineno, line in enumerate(handle, 1):
+                      if "\t" in line:
+                          print(f"{path}:{lineno}: tabs are not valid YAML indentation", file=sys.stderr)
+                          sys.exit(1)
+              print(f"yaml sanity ok: {path}")
+          PY
+          fi
+
+      - name: Check README URL and Windows asset references
+        shell: bash
+        run: |
+          set -euo pipefail
+          canonical_url="https://github.com/Aero-Apex/LarpCode-MacOS"
+          if ! grep -Fq "$canonical_url" README.md; then
+            echo "README.md must contain the canonical repo URL: $canonical_url" >&2
+            exit 1
+          fi
+          if git grep -n -I -E 'Tazmyan/LarpCode/releases/.*download/LarpCode-Setup\.exe'; then
+            echo "Tracked files must not reference the Windows LarpCode-Setup.exe release asset" >&2
+            exit 1
+          fi
+          echo "README URL and tracked-file asset checks passed"

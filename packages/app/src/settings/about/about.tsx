@@ -164,7 +164,7 @@ export function SettingsAbout(props: { active: boolean }) {
       </div>
 
       <p class="settings-about-faint">
-        <ExternalLink href="https://github.com/Tazmyan/LarpCode">
+        <ExternalLink href="https://github.com/Aero-Apex/LarpCode-MacOS">
           <bdi dir="ltr">{language.t("settings.about.website")}</bdi>
         </ExternalLink>
       </p>

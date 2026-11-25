@@ -144,7 +144,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} andra",
   "settings.about.firstPublished": "Först publicerad i Missouri, USA",
   "settings.about.firstIllustrated": "Först illustrerad i London, England",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, kodningsagenten med öppen källkod",
   "settings.about.typeset": "Satt med Inter och IBM Plex Mono",
   "settings.about.tagline": "AI kan inte bygga fantastisk programvara utan dig",

@@ -659,7 +659,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} ሌሎች",
   "settings.about.firstPublished": "መጀመሪያ የታተመው በሚዙሪ፣ አሜሪካ",
   "settings.about.firstIllustrated": "መጀመሪያ ምስል የተሰራለት በለንደን፣ እንግሊዝ",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode፣ ክፍት ምንጭ የኮድ ወኪል",
   "settings.about.typeset": "በInter እና IBM Plex Mono ተሰድሯል",
   "settings.about.tagline": "ያለ እርስዎ AI ምርጥ ሶፍትዌር መገንባት አይችልም",

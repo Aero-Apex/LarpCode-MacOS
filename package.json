@@ -31,7 +31,11 @@
     "prepare": "husky",
     "random": "echo 'Random script'",
     "sso": "aws sso login --sso-session=opencode --no-browser",
-    "test": "echo 'do not run tests from root' && exit 1"
+    "test": "echo 'do not run tests from root' && exit 1",
+    "stage:macos": "bun run script/stage-macos.ts",
+    "verify:bundle": "bun run script/macos/verify-bundle.ts",
+    "notarize": "bun run script/macos/notarize.ts",
+    "check:macos": "bash -n install-cli.sh shortcuts/LarpCode.command shortcuts/larpcode && bun test script/macos/macos-packaging.test.ts"
   },
   "workspaces": {
     "packages": [

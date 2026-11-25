@@ -510,7 +510,7 @@ export const ProjectSettingsExtensions: Component<{
                 kind="skills"
                 empty={projectSkills().length === 0}
                 action={
-                  <ExternalLink class="settings-extension-link" href="https://github.com/Tazmyan/LarpCode#readme">
+                  <ExternalLink class="settings-extension-link" href="https://github.com/Aero-Apex/LarpCode-MacOS#readme">
                     {language.t("settings.extensions.addSkills")}
                   </ExternalLink>
                 }

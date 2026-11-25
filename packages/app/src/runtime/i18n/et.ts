@@ -667,7 +667,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} teised",
   "settings.about.firstPublished": "Esmakordselt avaldati USA-s Missouris",
   "settings.about.firstIllustrated": "Esmakordselt illustreeritud Londonis, Inglismaal",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, avatud lähtekoodiga kodeerimisagent",
   "settings.about.typeset": "Sisestatud Inter ja IBM Plex Mono",
   "settings.about.tagline": "AI ei saa ilma sinuta suurepärast tarkvara luua",

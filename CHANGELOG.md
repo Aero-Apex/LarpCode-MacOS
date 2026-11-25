@@ -2,6 +2,84 @@
 
 Release notes for OpenCode V2, newest first.
 
+## v1 / 1.0.0 — 2026-11-25
+
+First release of **LarpCode macOS**, the macOS edition of LarpCode ported from the
+Windows-only LarpCode fork. The application source is unchanged; the Windows
+delivery layer has been replaced with a macOS one. Requires macOS 13 (Ventura) or
+later, on Apple Silicon or Intel.
+
+### Highlights
+
+- **Desktop app for every Mac**: universal, `arm64`, and `x64` DMGs plus a
+  universal ZIP, built with `electron-builder` and installed by dragging
+  **LarpCode macOS** into Applications.
+- **Standalone CLI**: an arch-specific `larpcode` binary installed with
+  `install-cli.sh`, alongside a bundled CLI in the desktop app.
+- **macOS launchers and data locations**: a `.command` app launcher and POSIX CLI
+  shim replace the Windows `.bat`/`.vbs`/`.cmd` launchers, with XDG data under
+  `~/Library/Application Support/LarpCode macOS`.
+- **macOS release CI**: a GitHub Actions workflow builds, stages, verifies, and
+  publishes the macOS release assets.
+- **Unsigned v1 build**: binaries are unsigned and not notarized; see
+  [Notes](#notes).
+
+### Desktop
+
+- Added `LarpCode-macOS-universal.dmg`, `LarpCode-macOS-arm64.dmg`, and
+  `LarpCode-macOS-x64.dmg`, plus `LarpCode-macOS-universal.zip`, published on this
+  repository's latest release.
+- The app uses bundle identifier `ai.larpcode.desktop.macos` and keeps the
+  `opencode` URL scheme for session compatibility.
+- The in-app updater reads `update.json` from this repository's release feed and
+  never points at the Windows `LarpCode-Setup.exe` asset. Sessions and settings
+  are preserved across updates.
+- The macOS launchers set `XDG_DATA_HOME`, `XDG_CONFIG_HOME`, `XDG_CACHE_HOME`,
+  and `XDG_STATE_HOME` under `~/Library/Application Support/LarpCode macOS` and
+  `~/Library/Caches/LarpCode macOS`; paths are quoted because the app name
+  contains a space. Desktop and CLI installs share these locations and do not
+  read or overwrite an OpenCode installation's data.
+
+### Command line
+
+- `install-cli.sh` downloads the matching `larpcode` binary, verifies its SHA-256
+  checksum against `cli.json`, and installs it at `~/.larpcode/bin/larpcode`;
+  that directory can be added to `PATH`. The binary can also be downloaded
+  directly from Releases.
+- `larpcode upgrade` checks the same release feed, verifies the checksum, and
+  replaces the CLI. Open a new terminal afterward. The CLI bundled with the
+  desktop app is updated through the desktop app instead.
+- Replaced the Windows `.bat`/`.vbs`/`.cmd` launchers with a `.command` app
+  launcher and a POSIX `larpcode` shim.
+
+### Packaging and CI
+
+- Replaced the Windows release workflow with a macOS GitHub Actions workflow
+  running on `macos-14`. It builds the bundled and standalone CLIs and the
+  desktop app, stages the macOS bundle, assembles `cli.json`, `update.json`,
+  `SHA256SUMS`, source archives, and the DMG/ZIP assets, verifies checksums, and
+  publishes a draft release. The tag `v1` is accepted as an alias of `v1.0.0`.
+- Added env-gated `MACOS_SIGN_IDENTITY` and `MACOS_NOTARIZE_*` hooks. Absence of
+  signing secrets does not fail the build; hardened-runtime entitlements are
+  provided for future signing.
+
+### Documentation
+
+- Updated the README and install documentation for the macOS desktop and CLI
+  installs, updates, Gatekeeper and permissions, data locations, download
+  verification, and uninstall. All release URLs now point at this repository.
+
+### Notes
+
+- The v1 binaries are **unsigned and not notarized**. Gatekeeper may refuse the
+  first launch: right-click (or Control-click) the app and choose **Open**, or
+  remove the quarantine flag with
+  `xattr -dr com.apple.quarantine "/Applications/LarpCode macOS.app"`. Only do
+  this for a copy downloaded from the official Releases page.
+- This is a fork of the Windows [LarpCode](https://github.com/Tazmyan/LarpCode)
+  fork of OpenCode. Upstream credits and the MIT license are preserved; the
+  application engine itself is unmodified by this port.
+
 ## v2.3.0 — 2026-11-13
 
 ### Highlights

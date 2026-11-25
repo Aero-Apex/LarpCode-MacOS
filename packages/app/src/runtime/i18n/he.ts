@@ -685,7 +685,7 @@ export const dict = {
   "settings.about.otherContributor.other": "עוד {{count}}",
   "settings.about.firstPublished": "פורסם לראשונה ב-\u2068Missouri, USA\u2069",
   "settings.about.firstIllustrated": "אויר לראשונה ב-\u2068London, England\u2069",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "\u2068LarpCode\u2069, סוכן הקוד בקוד פתוח",
   "settings.about.typeset": "סודר בגופנים \u2068Inter\u2069 ו-\u2068IBM Plex Mono\u2069",
   "settings.about.tagline": "בינה מלאכותית לא יכולה לבנות תוכנה מעולה בלעדיך",

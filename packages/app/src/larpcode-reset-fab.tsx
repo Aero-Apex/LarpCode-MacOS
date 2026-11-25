@@ -21,8 +21,8 @@ export function LarpcodeWebsiteFab() {
       type="button"
       data-slot="larpcode-website-pill"
       onClick={openWebsite}
-      aria-label="Open LarpCode on GitHub"
-      title="Visit LarpCode on GitHub"
+      aria-label="Open LarpCode website"
+      title="Visit the LarpCode website"
       class="group fixed bottom-4 left-[9.5rem] z-[9999] inline-flex h-8 cursor-pointer appearance-none items-center gap-1.5 rounded-full border border-v2-border-border-muted bg-v2-background-bg-layer-02 px-3 text-[11px] leading-4 font-[530] text-v2-text-text-muted no-underline shadow-sm transition-[background-color,border-color,color] duration-150 ease-out hover:border-v2-border-border-base hover:bg-v2-background-bg-layer-03 hover:text-v2-text-text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-v2-border-border-focus motion-reduce:transition-none [app-region:no-drag]"
       
     >
@@ -44,7 +44,7 @@ export function LarpcodeWebsiteFab() {
           <path d="M8 1.5c-1.8 2-2.75 4.1-2.75 6.5S6.2 12.5 8 14.5" />
         </svg>
       </span>
-      <span class="whitespace-nowrap">GitHub</span>
+      <span class="whitespace-nowrap">Website</span>
     </button>
   )
 }

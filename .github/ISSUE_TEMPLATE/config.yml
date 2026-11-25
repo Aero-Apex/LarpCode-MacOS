@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Installation help
+    url: https://github.com/Aero-Apex/LarpCode-MacOS/blob/main/INSTALL.md
+    about: Read the macOS installation guide before opening an issue about installing or updating LarpCode macOS.
+  - name: macOS usage and permissions
+    url: https://github.com/Aero-Apex/LarpCode-MacOS/blob/main/MACOS.md
+    about: See the macOS guide for Gatekeeper, right-click to Open, quarantine removal, and CLI setup questions.
+  - name: Troubleshooting
+    url: https://github.com/Aero-Apex/LarpCode-MacOS/blob/main/docs/macos-troubleshooting.md
+    about: Check the macOS troubleshooting guide for known issues and fixes before reporting a bug.
+  - name: Core engine bugs (upstream)
+    url: https://github.com/Tazmyan/LarpCode/issues
+    about: Bugs in the shared AI/TUI/UI engine are maintained upstream at Tazmyan/LarpCode; report them there.

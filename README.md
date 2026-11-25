@@ -1,105 +1,107 @@
-# LarpCode
+# LarpCode macOS
 
-LarpCode is an open-source AI coding app for Windows. It is a community fork of
-[OpenCode](https://github.com/anomalyco/opencode) with a redesigned interface
-and extra tools for working with AI models.
+LarpCode is an open-source AI coding app — a community fork of
+[OpenCode](https://github.com/anomalyco/opencode) with a redesigned interface and
+extra tools for working with AI models. This repository is the **macOS edition**,
+ported from the Windows LarpCode fork.
 
-It runs on your own machine. Your files and prompts stay local, except for the
+It runs on your own Mac. Your files and prompts stay local, except for the
 requests you choose to send to an AI provider.
 
-## Download
+Requires **macOS 13 (Ventura) or later**, on either Apple Silicon or Intel.
 
-LarpCode comes in two shapes. Choose one:
+## Choose an install
 
 - **Desktop app (recommended)** — the full graphical app plus the `larpcode`
   terminal command.
 - **CLI only** — the terminal UI and `larpcode` command, without the desktop app.
 
-Both use the same LarpCode sessions, settings, and providers.
+Both use the same LarpCode sessions, settings, and providers, kept separate from
+any OpenCode installation on your machine.
 
-### Desktop app
+### Desktop app (DMG)
 
-1. Open the [Releases page](https://github.com/Tazmyan/LarpCode/releases).
-2. Download the latest `LarpCode-Setup.exe`.
-3. Run the installer and launch **LarpCode** from the Start Menu or desktop.
+1. Open the [latest release](https://github.com/Aero-Apex/LarpCode-MacOS/releases/latest).
+2. Download `LarpCode-macOS-universal.dmg` (or the `arm64` / `x64` DMG for your
+   Mac).
+3. Open the DMG and drag **LarpCode macOS** into your Applications folder.
+4. Eject the DMG, then launch the app from Applications.
 
-The installer also adds the bundled `larpcode` command to your user `PATH`, so
-you can open a terminal and start the TUI in any folder.
+The v1 release is **unsigned and not notarized**, so macOS Gatekeeper may refuse
+to open it the first time. To launch it:
 
-The current build is for **Windows 10 and 11 (64-bit)**.
+- Right-click (or Control-click) the app in Applications, choose **Open**, then
+  **Open** again in the dialog; or
+- Remove the quarantine flag from a terminal:
 
-The installer is not code-signed, so Windows SmartScreen may show a warning.
-Only continue if you downloaded the file from the official Releases page above
-(`More info` → `Run anyway`). Release files also include a `SHA256SUMS` file if
-you want to verify your download.
+  ```bash
+  xattr -dr com.apple.quarantine "/Applications/LarpCode macOS.app"
+  ```
+
+Only do this for a copy downloaded from the official Releases page above. A ZIP
+alternative (`LarpCode-macOS-universal.zip`) is published too if you prefer it.
+
+The desktop install also includes the bundled `larpcode` command — see
+[Command line](#command-line).
 
 ### CLI only
 
-Open PowerShell and run:
+Open Terminal and run this one line:
 
-```powershell
-irm https://github.com/Tazmyan/LarpCode/releases/latest/download/install-cli.ps1 | iex
+```bash
+curl -fsSL https://github.com/Aero-Apex/LarpCode-MacOS/releases/latest/download/install-cli.sh | sh
 ```
 
-Or paste this into Command Prompt:
+The script downloads the latest `larpcode` binary for your Mac, verifies its
+SHA-256 checksum against `cli.json`, and installs it at:
 
-```bat
-powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://github.com/Tazmyan/LarpCode/releases/latest/download/install-cli.ps1 | iex"
+```
+~/.larpcode/bin/larpcode
 ```
 
-The script:
+Add that folder to your `PATH` — for example, in `~/.zshrc` (or your shell's
+config file):
 
-1. Downloads the latest `larpcode.exe` from the official Releases page.
-2. Verifies its SHA-256 checksum against `cli.json`.
-3. Installs it to `%LOCALAPPDATA%\Programs\LarpCode CLI\bin`.
-4. Adds that folder to your user `PATH`.
+```bash
+export PATH="$HOME/.larpcode/bin:$PATH"
+```
 
 Open a new terminal afterward, then run `larpcode --help` or just `larpcode` to
-start the TUI in the current folder. You can also download `larpcode.exe`
-manually from the Releases page and put it in any folder that is already on
-your `PATH`.
+start the TUI in the current folder. You can also download the `larpcode` binary
+from the Releases page and place it in any folder already on your `PATH`.
 
-The CLI-only install does not create Start Menu shortcuts, install the desktop
-app, or share OpenCode's data.
+The CLI-only install does not install the desktop app or create desktop
+shortcuts.
 
-<details>
-<summary>Install a specific CLI version</summary>
+## First launch
 
-```powershell
-$install = irm https://github.com/Tazmyan/LarpCode/releases/latest/download/install-cli.ps1
-& ([scriptblock]::Create($install)) -Version 1.0.2
-```
-
-</details>
+LarpCode does not include an AI model or an API key. On first launch, open
+**Settings** and connect the provider you want to use (for example OpenAI,
+Anthropic, Google, or a local model). You can change or remove providers at any
+time.
 
 ## Updates
 
-- **Desktop app** — checks the public LarpCode release feed and offers updates
-  inside the app. Your sessions and settings are kept.
+- **Desktop app** — checks the public release feed and offers updates inside the
+  app. Your sessions and settings are kept.
 - **CLI only** — `larpcode upgrade` checks the same release feed, downloads the
-  matching `larpcode.exe`, verifies its checksum, and replaces the CLI. Open a
-  new terminal afterward.
-- **CLI installed by the desktop app** — update through the desktop app. The
+  matching `larpcode` binary, verifies its checksum, and replaces the CLI. Open
+  a new terminal afterward.
+- **CLI bundled with the desktop app** — update through the desktop app; the
   bundled CLI does not replace itself.
 
 The first update check happens automatically. Open `/update` in the TUI or run
 `larpcode upgrade` to check manually.
 
-## First launch
-
-LarpCode does not include an AI model or an API key. To start coding, open
-**Settings** and connect the provider you want to use (for example OpenAI,
-Anthropic, Google, or a local model). You can change or remove providers at any
-time.
-
 ## Command line
 
-Both installs add `larpcode` to your per-user `PATH`, so the command works in
-Command Prompt, PowerShell, and Windows Terminal. Open a new terminal after
-installing, then pass a folder to start there or use any CLI flag:
+With `~/.larpcode/bin` on your `PATH`, `larpcode` works in Terminal and in the
+desktop app's terminal. Open a new terminal after installing, then pass a folder
+using a POSIX path to start there:
 
-```bat
-larpcode C:\path\to\project
+```bash
+larpcode /Users/you/Projects/my-app
+cd ~/Projects/my-app && larpcode
 larpcode --help
 ```
 
@@ -110,7 +112,7 @@ see missing helpers.
 
 Useful commands:
 
-```bat
+```bash
 larpcode usage       limits, reset times, and local activity graphs
 larpcode reset       clear local usage counters (--deep also clears sessions)
 larpcode settings    LarpCode switches, Auto JB, dependencies, and paths
@@ -120,25 +122,49 @@ larpcode doctor      server, database, WARP, Tor, and curl-impersonate
 Free models use opencode.ai's shared anonymous pool. When that pool refuses a
 request and Free fallback is on, LarpCode routes it to a fallback provider
 instead: the configured DeepSeek key when present, otherwise Pollinations
-(`text.pollinations.ai`). The TUI shows a “Fallback in use” notice and records
+(`text.pollinations.ai`). The TUI shows a "Fallback in use" notice and records
 the provider in LarpCode settings; `larpcode run` prints the same notice to
-stderr (or a `fallback` event with `--format json`). `larpcode usage` reports
-the current free-route state and the last fallback used. A refusal is the shared
+stderr (or a `fallback` event with `--format json`). `larpcode usage` reports the
+current free-route state and the last fallback used. A refusal is the shared
 pool's limit, not a limit on your local usage.
 
 `larpcode doctor` and `larpcode settings` report optional helpers that are not
-installed, including Cloudflare WARP, Tor, and curl-impersonate. They are
+installed, including Cloudflare WARP, Tor, and curl-impersonate. These are
 warnings, not fatal errors.
 
-- Desktop install: the launcher is
-  `%LOCALAPPDATA%\Programs\LarpCode\shortcuts\larpcode.cmd`, and the **LarpCode
-  CLI** Start Menu shortcut runs the same thing.
-- CLI-only install: the executable is
-  `%LOCALAPPDATA%\Programs\LarpCode CLI\bin\larpcode.exe`.
+## Where LarpCode stores data
 
-The desktop app, the Start Menu shortcut, and the CLI-only install share
-LarpCode's own config, sessions, and cache. They do not read or overwrite the
-data of an OpenCode installation on the same machine.
+The macOS launchers set XDG variables under Application Support. Because the app
+name contains a space, these paths are quoted:
+
+```
+XDG_DATA_HOME   = "$HOME/Library/Application Support/LarpCode macOS/xdg/data"
+XDG_CONFIG_HOME = "$HOME/Library/Application Support/LarpCode macOS/xdg/config"
+XDG_CACHE_HOME  = "$HOME/Library/Caches/LarpCode macOS/xdg/cache"
+XDG_STATE_HOME  = "$HOME/Library/Application Support/LarpCode macOS/xdg/state"
+```
+
+The desktop app and CLI-only installs share these locations. They do not read
+or overwrite the data of an OpenCode installation on the same machine.
+
+## Verify your download
+
+Release assets are listed in a `SHA256SUMS` file. From the folder containing the
+downloaded files:
+
+```bash
+shasum -a 256 -c SHA256SUMS
+```
+
+## Uninstall
+
+- **Desktop app** — quit LarpCode, then drag **LarpCode macOS** from Applications
+  to the Trash.
+- **CLI** — delete `~/.larpcode/bin/larpcode` and remove the
+  `~/.larpcode/bin` `PATH` line you added to your shell config.
+- **All data** — to remove sessions, settings, and caches as well, delete the
+  folders listed in [Where LarpCode stores data](#where-larpcode-stores-data).
+  This cannot be undone.
 
 ## Features
 
@@ -148,8 +174,7 @@ data of an OpenCode installation on the same machine.
   every model request instead of the workspace `AGENTS.md`.
 - **Full OpenCode experience** — sessions, tools, plugins, projects, and the
   local agent runtime, with a LarpCode interface.
-- **Windows desktop app** — a normal installer, Start Menu shortcuts, and an
-  in-app updater.
+- **macOS desktop app** — a DMG you drag to Applications and an in-app updater.
 - **Fresh reset** — backs up local sessions, clears local usage data, rotates
   the local client identity, and can rotate your network egress if you have
   configured it.
@@ -157,27 +182,16 @@ data of an OpenCode installation on the same machine.
 - **Usage dashboard** — see local token and cost estimates and reset the local
   counters when you want a clean slate.
 
+## More documentation
+
+- [INSTALL.md](./INSTALL.md) — detailed install steps.
+- [MACOS.md](./MACOS.md) — macOS permissions, Gatekeeper, and unsigned-app notes.
+- [docs/](./docs/) — additional guides.
+
 ## Build from source
 
-You need [Bun](https://bun.sh) and, for the installer, Inno Setup 6.
-
-```bash
-bun install
-bun run --cwd packages/cli build
-bun run --cwd packages/desktop build
-bun run script/fetch-installer-deps.ts
-bun run script/fetch-electron.ts
-bun run script/stage-installer.ts
-```
-
-The desktop build bundles the CLI. `script/stage-installer.ts` stages the app
-and builds `installer/dist/LarpCode-Setup.exe`. The fetch steps download the
-third-party Tor, curl-impersonate, and Electron binaries used by the installer;
-Electron is pinned to `packages/desktop/package.json` and verified against the
-official `SHASUMS256.txt`.
-
-The version comes from the `VERSION` file. A release tag must be `v` plus that
-version (for example `VERSION` = `1.0.1` and tag `v1.0.1`).
+LarpCode is a Bun/TypeScript monorepo. See [CONTRIBUTING.md](./CONTRIBUTING.md)
+and [docs/](./docs/) for development and macOS packaging details.
 
 ## Community
 

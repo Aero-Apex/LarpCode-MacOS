@@ -28,9 +28,10 @@ const docsCliHref = getRelativeLocaleUrl(locale, "cli")
 const docsIdeHref = getRelativeLocaleUrl(locale, "ide")
 const docsGithubHref = getRelativeLocaleUrl(locale, "github")
 
+const releases = "https://github.com/Aero-Apex/LarpCode-MacOS/releases/latest/download/"
 const command = "curl -fsSL"
 const protocol = "https://"
-const url = "opencode.ai/install"
+const url = "github.com/Aero-Apex/LarpCode-MacOS/releases/latest/download/install-cli.sh"
 const bash = "| bash"
 
 let darkImage: ImageMetadata | undefined;
@@ -93,64 +94,44 @@ if (image) {
 
     <section class="alternatives">
       <div class="col1">
-        <h3>npm</h3>
-        <button class="command" data-command="npm install -g opencode-ai">
+        <h3>Universal DMG</h3>
+        <a class="command" href={`${releases}LarpCode-macOS-universal.dmg`}>
           <code>
-            <span>npm install -g</span> <span class="highlight">opencode-ai</span>
+            <span>Download</span> <span class="highlight">LarpCode-macOS-universal.dmg</span>
           </code>
-          <span class="copy">
-            <CopyIcon />
-            <CheckIcon />
-          </span>
-        </button>
+        </a>
       </div>
       <div class="col2">
-        <h3>Bun</h3>
-        <button class="command" data-command="bun install -g opencode-ai">
+        <h3>Apple Silicon (arm64)</h3>
+        <a class="command" href={`${releases}LarpCode-macOS-arm64.dmg`}>
           <code>
-            <span>bun install -g</span> <span class="highlight">opencode-ai</span>
+            <span>Download</span> <span class="highlight">LarpCode-macOS-arm64.dmg</span>
           </code>
-          <span class="copy">
-            <CopyIcon />
-            <CheckIcon />
-          </span>
-        </button>
+        </a>
       </div>
       <div class="col3">
-        <h3>Homebrew</h3>
-        <button class="command" data-command="brew install opencode">
+        <h3>Intel (x64)</h3>
+        <a class="command" href={`${releases}LarpCode-macOS-x64.dmg`}>
           <code>
-            <span>brew install</span> <span class="highlight">opencode</span>
+            <span>Download</span> <span class="highlight">LarpCode-macOS-x64.dmg</span>
           </code>
-          <span class="copy">
-            <CopyIcon />
-            <CheckIcon />
-          </span>
-        </button>
+        </a>
       </div>
       <div class="col4">
-        <h3>Paru</h3>
-        <button class="command" data-command="paru -S opencode-bin">
+        <h3>ZIP</h3>
+        <a class="command" href={`${releases}LarpCode-macOS-universal.zip`}>
           <code>
-            <span>paru -S</span> <span class="highlight">opencode-bin</span>
+            <span>Download</span> <span class="highlight">LarpCode-macOS-universal.zip</span>
           </code>
-          <span class="copy">
-            <CopyIcon />
-            <CheckIcon />
-          </span>
-        </button>
+        </a>
       </div>
       <div class="col4">
-        <h3>Mise</h3>
-        <button class="command" data-command="mise use -g github:anomalyco/opencode">
+        <h3>Checksums</h3>
+        <a class="command" href={`${releases}SHA256SUMS`}>
           <code>
-            <span>mise use -g</span> <span class="highlight">github:anomalyco/opencode</span>
+            <span>Download</span> <span class="highlight">SHA256SUMS</span>
           </code>
-          <span class="copy">
-            <CopyIcon />
-            <CheckIcon />
-          </span>
-        </button>
+        </a>
       </div>
     </section>
 
@@ -191,7 +172,8 @@ if (image) {
         <a href={discord.href} target="_blank" rel="noopener noreferrer">Discord</a>
       </div>
       <div class="col3">
-      <span>&copy;2025 <a href="https://anoma.ly" target="_blank" rel="noopener noreferrer">Anomaly Innovations</a></span>
+      <span>&copy;2025 <a href="https://github.com/Aero-Apex/LarpCode-MacOS"
+        target="_blank" rel="noopener noreferrer">LarpCode (macOS) — a community fork of OpenCode</a></span>
       </div>
     </section>
 </div>

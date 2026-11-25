@@ -683,7 +683,7 @@ export const dict = {
   "settings.about.otherContributor.other": "အခြား {{count}} ခု",
   "settings.about.firstPublished": "အမေရိကန်နိုင်ငံ၊ Missouri တွင် ပထမဆုံးထုတ်ဝေသည်။",
   "settings.about.firstIllustrated": "အင်္ဂလန်နိုင်ငံ လန်ဒန်မြို့မှာ ပထမဆုံး သရုပ်ဖော်ခဲ့ပါတယ်။",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode၊ ပွင့်လင်းရင်းမြစ် ကုဒ်နံပါတ် အေးဂျင့်",
   "settings.about.typeset": "Inter နှင့် IBM Plex Mono တွင် အမျိုးအစားအစုံ",
   "settings.about.tagline": "AI သည် သင်မပါဘဲ ကောင်းမွန်သော ဆော့ဖ်ဝဲလ်ကို မတည်ဆောက်နိုင်ပါ။",

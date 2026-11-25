@@ -168,6 +168,18 @@ function make(
         )
       }
 
+      if (process.platform === "darwin" && /^terminal(\.app)?$/i.test(path.basename(application))) {
+        const info = yield* fs.stat(target)
+        const cwd = info.type === "Directory" ? target : path.dirname(target)
+
+        // Terminal takes a working directory, not a path; `open -a Terminal <dir>` starts a window there.
+        return yield* Effect.tryPromise(() =>
+          new Promise<void>((resolve, reject) => {
+            execFile("open", ["-a", "Terminal", cwd], (error) => (error ? reject(error) : resolve()))
+          }),
+        )
+      }
+
       yield* Effect.tryPromise(() =>
         new Promise<void>((resolve, reject) => {
           const command =

@@ -670,7 +670,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} başga",
   "settings.about.firstPublished": "Ilkinji gezek Missuri, ABŞ-da neşir edildi",
   "settings.about.firstIllustrated": "Ilkinji gezek London, Angliýada suratlandyryldy",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, açyk çeşmeli kodlaşdyrma agenti",
   "settings.about.typeset": "Inter we IBM Plex Mono bilen düzüldi",
   "settings.about.tagline": "AI sizsiz ajaýyp programma üpjünçiligini döredip bilmez",

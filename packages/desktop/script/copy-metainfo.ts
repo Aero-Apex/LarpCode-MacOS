@@ -43,13 +43,13 @@ const xml = `<?xml version="1.0" encoding="UTF-8"?>
 
   <content_rating type="oars-1.1" />
 
-  <url type="bugtracker">https://github.com/Tazmyan/LarpCode/issues</url>
-  <url type="homepage">https://github.com/Tazmyan/LarpCode</url>
-  <url type="vcs-browser">https://github.com/Tazmyan/LarpCode</url>
+  <url type="bugtracker">https://github.com/Aero-Apex/LarpCode-MacOS/issues</url>
+  <url type="homepage">https://github.com/Aero-Apex/LarpCode-MacOS</url>
+  <url type="vcs-browser">https://github.com/Aero-Apex/LarpCode-MacOS</url>
 
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/Tazmyan/LarpCode/main/packages/web/src/assets/lander/screenshot.png</image>
+      <image>https://raw.githubusercontent.com/Aero-Apex/LarpCode-MacOS/main/packages/web/src/assets/lander/screenshot.png</image>
     </screenshot>
   </screenshots>
 </component>

@@ -101,7 +101,7 @@ export function createHomeProjectsController(home: HomeController) {
     },
     utility: {
       settings: openSettings,
-      help: () => platform.openExternal("https://github.com/Tazmyan/LarpCode/issues"),
+      help: () => platform.openExternal("https://github.com/Aero-Apex/LarpCode-MacOS/issues"),
     },
   }
 }

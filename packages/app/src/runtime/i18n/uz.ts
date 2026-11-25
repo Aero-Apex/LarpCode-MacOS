@@ -676,7 +676,7 @@ export const dict = {
   "settings.about.otherContributor.other": "yana {{count}} ta",
   "settings.about.firstPublished": "Ilk bor Missuri, AQSHda nashr etilgan",
   "settings.about.firstIllustrated": "Ilk bor London, Angliyada bezatilgan",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, ochiq manbali kodlash agenti",
   "settings.about.typeset": "Inter va IBM Plex Mono shriftlarida terilgan",
   "settings.about.tagline": "Sizsiz AI ajoyib dasturiy ta’minot yarata olmaydi",

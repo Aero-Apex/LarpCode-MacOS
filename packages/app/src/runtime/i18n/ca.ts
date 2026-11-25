@@ -680,7 +680,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} altres",
   "settings.about.firstPublished": "Publicat per primera vegada a Missouri, EUA",
   "settings.about.firstIllustrated": "Il·lustrat per primera vegada a Londres, Anglaterra",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, l'agent de codificació de codi obert",
   "settings.about.typeset": "Tipografia en Inter i IBM Plex Mono",
   "settings.about.tagline": "La IA no pot crear un gran programari sense tu",

@@ -688,7 +688,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} kitų",
   "settings.about.firstPublished": "Pirmą kartą išleista Misūrio valstijoje, JAV",
   "settings.about.firstIllustrated": "Pirmą kartą iliustruotas Londone, Anglijoje",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, atvirojo kodo kodavimo agentas",
   "settings.about.typeset": "Rinkinys „Inter“ ir „IBM Plex Mono“.",
   "settings.about.tagline": "AI negali sukurti puikios programinės įrangos be jūsų",

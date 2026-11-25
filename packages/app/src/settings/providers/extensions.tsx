@@ -274,7 +274,7 @@ export const SettingsExtensions: Component<{
                 <span class="settings-extension-heading text-13-medium">
                   {language.t("settings.extensions.availableAll")}
                 </span>
-                <ExternalLink class="settings-extension-link text-13-regular" href="https://github.com/Tazmyan/LarpCode#readme">
+                <ExternalLink class="settings-extension-link text-13-regular" href="https://github.com/Aero-Apex/LarpCode-MacOS#readme">
                   {language.t("settings.extensions.addSkills")}
                 </ExternalLink>
               </div>

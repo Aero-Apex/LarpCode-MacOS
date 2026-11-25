@@ -674,7 +674,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} aðrir",
   "settings.about.firstPublished": "Fyrst gefin út í Missouri í Bandaríkjunum",
   "settings.about.firstIllustrated": "Fyrst myndskreytt í London á Englandi",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, opinn kóðunaraðili",
   "settings.about.typeset": "Tegund í Inter og IBM Plex Mono",
   "settings.about.tagline": "AI getur ekki smíðað frábæran hugbúnað án þín",

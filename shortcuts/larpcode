@@ -1,0 +1,47 @@
+#!/bin/sh
+# LarpCode CLI launcher. Add this folder to the user PATH so `larpcode` works
+# from any terminal, just like `opencode`.
+#
+# Pass a directory or any CLI flag:
+#   larpcode /path/to/project
+#   larpcode --help
+
+# Keep the sidecar's state out of an installed OpenCode profile. These match
+# the folders used by the macOS desktop app.
+XDG_DATA_HOME="$HOME/Library/Application Support/LarpCode macOS/xdg/data"
+XDG_CONFIG_HOME="$HOME/Library/Application Support/LarpCode macOS/xdg/config"
+XDG_CACHE_HOME="$HOME/Library/Caches/LarpCode macOS/xdg/cache"
+XDG_STATE_HOME="$HOME/Library/Application Support/LarpCode macOS/xdg/state"
+export XDG_DATA_HOME
+export XDG_CONFIG_HOME
+export XDG_CACHE_HOME
+export XDG_STATE_HOME
+
+mkdir -p "$XDG_DATA_HOME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME"
+
+APP_ROOT=$(CDPATH= cd "$(dirname "$0")/.." && pwd -P)
+
+# macOS bundles keep the sidecar in Contents/Resources; legacy unpacked
+# installs used desktop-pkg/resources, and a standalone CLI may sit beside us.
+CLI=""
+while IFS= read -r candidate; do
+  [ -n "$candidate" ] || continue
+  if [ -x "$candidate" ]; then
+    CLI="$candidate"
+    break
+  fi
+done <<EOF
+$APP_ROOT/LarpCode macOS.app/Contents/Resources/opencode-cli
+$APP_ROOT/LarpCode macOS.app/Contents/Resources/larpcode
+$APP_ROOT/desktop-pkg/resources/opencode-cli
+$APP_ROOT/larpcode
+$HOME/.larpcode/bin/larpcode
+EOF
+
+if [ -z "$CLI" ]; then
+  echo "LarpCode CLI was not found in the app bundle, install root, or $HOME/.larpcode/bin." >&2
+  echo "Install the desktop app or run install-cli.sh, then try again." >&2
+  exit 1
+fi
+
+exec "$CLI" "$@"

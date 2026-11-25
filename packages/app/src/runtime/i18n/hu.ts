@@ -681,7 +681,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} egyebek",
   "settings.about.firstPublished": "Először az Egyesült Államokban, Missouriban jelent meg",
   "settings.about.firstIllustrated": "Először Londonban, Angliában illusztrálták",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, a nyílt forráskódú kódoló ügynök",
   "settings.about.typeset": "Betűkészlet Inter és IBM Plex Mono nyelven",
   "settings.about.tagline": "Az AI nem tud nagyszerű szoftvert készíteni nélküled",

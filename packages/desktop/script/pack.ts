@@ -6,11 +6,14 @@ import { getConfig } from "../electron-builder.config"
 import { getCurrentCli, resolveChannel } from "./utils"
 
 // Packages the built app (out/) for OPENCODE_TARGET into dist/desktop at the repository root, unsigned:
-// macOS: the .app as a tarball. Windows: the unpacked app in app/, or with OPENCODE_DESKTOP_APP, the NSIS
+// macOS: DMG and ZIP installers. Windows: the unpacked app in app/, or with OPENCODE_DESKTOP_APP, the NSIS
 // installer around that (signed) app. Linux: AppImage, deb and rpm. The release workflow signs afterwards.
 const dir = path.resolve(import.meta.dir, "..")
 
 const out = path.resolve(dir, "../../dist/desktop")
+
+// This repo's release feed publishes LarpCode-macOS-*.dmg/.zip, never the upstream Windows .exe.
+const RELEASE_FEED = "https://github.com/Aero-Apex/LarpCode-MacOS/releases/latest/download/"
 
 const cli = getCurrentCli()
 
@@ -46,13 +49,30 @@ if (!app && os === "linux") {
 }
 
 if (!app && os === "mac") {
-  await $`bunx electron-builder ${flags} --dir -c.mac.identity=null`
+  // flags already carries --mac and the OPENCODE_TARGET-derived --cpu. Build real dmg/zip targets instead of
+  // --dir; a secretless job stays unsigned, and a configured identity is passed straight to electron-builder.
+  const identity = process.env.MACOS_SIGN_IDENTITY?.trim()
+  const macFlags = [
+    "--dmg",
+    "--zip",
+    identity ? `-c.mac.identity=${identity}` : "-c.mac.identity=null",
+    `-c.publish.url=${RELEASE_FEED}`,
+  ]
+  await $`bunx electron-builder ${flags} ${macFlags}`
+
+  const artifacts = (await readdir("dist")).filter((file) => /\.(dmg|zip)$/.test(file))
+  const dmg = artifacts.find((file) => file.endsWith(".dmg"))
+  const zip = artifacts.find((file) => file.endsWith(".zip"))
+
+  if (!dmg || !zip) throw new Error(`Expected a .dmg and a .zip in dist, found ${artifacts.join(", ")}`)
+
   const parent = path.join("dist", cli.cpu === "arm64" ? "mac-arm64" : "mac")
   const bundles = (await readdir(parent)).filter((file) => file.endsWith(".app"))
 
   if (bundles.length !== 1) throw new Error(`Expected one .app bundle in ${parent}, found ${bundles.join(", ")}`)
-  await writeUpdateConfig(path.join(parent, bundles[0], "Contents", "Resources"))
-  await $`tar -cf ${path.join(out, `opencode-desktop-mac-${cli.cpu}.app.tar`)} -C ${parent} ${bundles[0]}`
+  await writeUpdateConfig(path.join(parent, bundles[0], "Contents", "Resources"), RELEASE_FEED)
+  await cp(path.join("dist", dmg), path.join(out, `LarpCode-macOS-${cli.cpu}.dmg`))
+  await cp(path.join("dist", zip), path.join(out, `LarpCode-macOS-${cli.cpu}.zip`))
 }
 
 if (!app && os === "win") {
@@ -62,16 +82,17 @@ if (!app && os === "win") {
   await cp(unpacked, path.join(out, "app"), { recursive: true })
 }
 
-// electron-builder writes resources/app-update.yml only for dmg, zip and nsis targets, not for --dir builds.
-// electron-updater reads its feed from that file, so write the one those targets would.
-async function writeUpdateConfig(resources: string) {
+// electron-builder writes resources/app-update.yml for dmg, zip and nsis targets, but not for --dir builds.
+// Keep writing it for those --dir builds; macOS passes this repo's dmg/zip feed so the packaged metadata never
+// points at the upstream Windows .exe installer.
+async function writeUpdateConfig(resources: string, url = getConfig().publish.url) {
   const publish = getConfig().publish
   const name: string = (await Bun.file("package.json").json()).name
   await Bun.write(
     path.join(resources, "app-update.yml"),
     [
       `provider: ${publish.provider}`,
-      `url: ${publish.url}`,
+      `url: ${url}`,
       `channel: ${publish.channel}`,
       `updaterCacheDirName: '${name.replace(/[/\\:*?"<>|]/g, "").toLowerCase()}-updater'`,
     ].join("\n") + "\n",

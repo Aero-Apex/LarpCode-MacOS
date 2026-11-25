@@ -1032,7 +1032,7 @@ export const dict = {
   "larpcode.version.aria": "Current version v{{version}} — click to copy",
   "larpcode.version.label": "v{{version}}",
   "larpcode.version.copied": "copied",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, the open-source coding agent",
   "settings.about.typeset": "Typeset in Inter and IBM Plex Mono",
   "settings.about.notices.title": "Third-party notices",

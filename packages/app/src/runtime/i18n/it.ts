@@ -154,7 +154,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} altri",
   "settings.about.firstPublished": "Pubblicato per la prima volta nel Missouri, USA",
   "settings.about.firstIllustrated": "Illustrato per la prima volta a Londra, Inghilterra",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, l’agente di programmazione open source",
   "settings.about.typeset": "Composto in Inter e IBM Plex Mono",
   "settings.about.tagline": "L’IA non può creare software eccellente senza di te",

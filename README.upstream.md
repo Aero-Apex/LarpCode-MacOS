@@ -1,3 +1,5 @@
+> **Note:** This file is preserved verbatim as upstream OpenCode reference material. macOS-specific installation is documented in [README.md](README.md), [INSTALL.md](INSTALL.md) and [MACOS.md](MACOS.md).
+
 <p align="center">
   <a href="https://opencode.ai">
     <picture>

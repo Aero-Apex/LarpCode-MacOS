@@ -675,7 +675,7 @@ export const dict = {
   "settings.about.otherContributor.other": "अन्य {{count}}",
   "settings.about.firstPublished": "पहिलो पटक मिसौरी, संयुक्त राज्य अमेरिकामा प्रकाशित",
   "settings.about.firstIllustrated": "पहिलो पटक लन्डन, इङ्ग्ल्यान्डमा चित्रित",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, खुला स्रोत कोडिङ एजेन्ट",
   "settings.about.typeset": "Inter र IBM Plex Mono मा अक्षर संयोजन",
   "settings.about.tagline": "तपाईंबिना AI ले उत्कृष्ट सफ्टवेयर बनाउन सक्दैन",

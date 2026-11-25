@@ -9,6 +9,7 @@ import installer from "../../../../../install?raw"
 import { DesktopPaths } from "../paths"
 import { BUNDLED_CLI_VERSION_KEY } from "../storage/keys"
 import { getStore } from "../storage/store"
+import { cliCandidates } from "./cli-binary"
 import { parseCliVersion, stageName } from "./cli-version"
 import { DesktopCliState } from "./desktop-cli-state"
 
@@ -83,9 +84,19 @@ const resolveBundledCli = Effect.fn("DesktopCli.resolveBundled")(function* (isol
   const path = yield* Path.Path
   const paths = yield* DesktopPaths.resolve
 
-  const bundled = app.isPackaged
-    ? path.join(process.resourcesPath, executableName())
-    : path.join(paths.developmentResourcesRoot, isolated ? developmentExecutableName() : executableName())
+  const directory = app.isPackaged ? process.resourcesPath : paths.developmentResourcesRoot
+  // macOS may ship the CLI as `larpcode` instead of the upstream `opencode-cli`,
+  // either in Resources or beside the app executable. Windows keeps its single
+  // canonical name so resolution there is unchanged.
+  const besideExecutable =
+    process.platform === "darwin" && app.isPackaged && !isolated ? cliCandidates(path.dirname(process.execPath)) : []
+  const candidates =
+    process.platform === "win32"
+      ? [path.join(directory, executableName())]
+      : isolated
+        ? [path.join(directory, developmentExecutableName())]
+        : [...cliCandidates(directory), ...besideExecutable]
+  const bundled = yield* Effect.sync(() => candidates.find((candidate) => existsSync(candidate)) ?? candidates[0])
 
   yield* Effect.logInfo("v2 CLI executable resolved", { bundled, packaged: app.isPackaged })
   const version = yield* bundledVersion(bundled)

@@ -735,7 +735,7 @@ export const dict = {
   "settings.about.otherContributor.other": "อีก {{count}} คน",
   "settings.about.firstPublished": "ตีพิมพ์ครั้งแรกในรัฐมิสซูรี สหรัฐอเมริกา",
   "settings.about.firstIllustrated": "ภาพประกอบครั้งแรกในลอนดอน ประเทศอังกฤษ",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode เอเจนต์การเข้ารหัสโอเพ่นซอร์ส",
   "settings.about.typeset": "เรียงพิมพ์ใน Inter และ IBM Plex Mono",
   "settings.about.tagline": "AI ไม่สามารถสร้างซอฟต์แวร์ที่ยอดเยี่ยมได้หากไม่มีคุณ",

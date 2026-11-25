@@ -676,7 +676,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} yang lain",
   "settings.about.firstPublished": "Pertama kali diterbitkan di Missouri, Amerika Syarikat",
   "settings.about.firstIllustrated": "Pertama digambarkan di London, England",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, ejen pengekodan sumber terbuka",
   "settings.about.typeset": "Set taip dalam Inter dan IBM Plex Mono",
   "settings.about.tagline": "AI tidak boleh membina perisian yang hebat, tanpa anda",

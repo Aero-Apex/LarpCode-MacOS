@@ -671,7 +671,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} onnur",
   "settings.about.firstPublished": "Fyrst útgivið í Missouri í USA",
   "settings.about.firstIllustrated": "Fyrst myndprýdd í London í Onglandi",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, opna keldukoduumboðnum",
   "settings.about.typeset": "Skriftsett í Inter og IBM Plex Mono",
   "settings.about.tagline": "AI kann ikki byggja góða ritbúnað, uttan teg",

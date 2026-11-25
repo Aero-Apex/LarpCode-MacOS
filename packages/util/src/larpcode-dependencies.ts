@@ -32,14 +32,24 @@ const WARP_CANDIDATES = [
   "C:\\Program Files (x86)\\Cloudflare\\Cloudflare WARP\\warp-cli.exe",
 ]
 
+// Bundled helpers are named with a .exe suffix on Windows and without one on
+// macOS/Linux. Shared by the probes and the user-facing labels in inspect().
+function binaryName(name: string): string {
+  return process.platform === "win32" ? `${name}.exe` : name
+}
+
 export function findWarp(): string | undefined {
-  for (const candidate of WARP_CANDIDATES) if (existsSync(candidate)) return candidate
-  return findOnPath(["warp-cli", "warp-cli.exe"])
+  // Windows installs warp-cli under Program Files. On macOS the Cloudflare WARP
+  // app puts the `warp-cli` shim on PATH, so resolve it there instead.
+  if (process.platform === "win32") {
+    for (const candidate of WARP_CANDIDATES) if (existsSync(candidate)) return candidate
+    return findOnPath(["warp-cli", "warp-cli.exe"])
+  }
+  return findOnPath(["warp-cli"])
 }
 
 export function findTor(): string | undefined {
-  const binary = process.platform === "win32" ? "tor.exe" : "tor"
-  const bundled = findBundled("deps", "tor", binary)
+  const bundled = findBundled("deps", "tor", binaryName("tor"))
   if (bundled) return bundled
   const override = process.env.LARPCODE_TOR_BIN
   if (override && existsSync(override)) return override
@@ -47,7 +57,9 @@ export function findTor(): string | undefined {
 }
 
 export function findImpersonate(): string | undefined {
-  return findBundled("deps", "impersonate", "curl-impersonate.exe")
+  const override = process.env.LARPCODE_CURL_IMPERSONATE
+  if (override && existsSync(override)) return override
+  return findBundled("deps", "impersonate", binaryName("curl-impersonate"))
 }
 
 export function findBundled(...parts: string[]): string | undefined {
@@ -113,7 +125,7 @@ export function inspect(): Report {
       name: "Cloudflare WARP",
       installed: Boolean(warp),
       path: warp,
-      detail: warp ?? "You don't have Cloudflare WARP installed (warp-cli.exe not found).",
+      detail: warp ?? `You don't have Cloudflare WARP installed (${binaryName("warp-cli")} not found).`,
       hint: warp
         ? "Auto-rotate can reset your egress IP through WARP."
         : "Install it from https://1.1.1.1/ to rotate your egress IP automatically.",
@@ -123,7 +135,7 @@ export function inspect(): Report {
       name: "Tor",
       installed: Boolean(tor),
       path: tor,
-      detail: tor ?? "Bundled Tor was not found (tor.exe).",
+      detail: tor ?? `Bundled Tor was not found (${binaryName("tor")}).`,
       hint: tor
         ? "Deep resets can rotate a Tor circuit when Tor routing is enabled."
         : "Optional. Deep resets cannot rotate a Tor circuit; WARP rotation still works. Set LARPCODE_TOR_BIN or use the desktop build.",

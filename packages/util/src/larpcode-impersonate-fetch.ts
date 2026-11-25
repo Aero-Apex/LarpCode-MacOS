@@ -15,7 +15,8 @@ export * as LarpcodeImpersonateFetch from "./larpcode-impersonate-fetch.js"
 //
 // Fix: shell every opencode.ai request out to the bundled curl-impersonate
 // binary (lexiforest/curl-impersonate v2.3.2, ships in installer-stage/
-// deps/impersonate/curl-impersonate.exe). That binary emits a real Chrome /
+// deps/impersonate/curl-impersonate.exe on Windows, curl-impersonate on
+// macOS/Linux). That binary emits a real Chrome /
 // Firefox / Safari / Edge ClientHello with the right cipher order, extension
 // ordering, ALPN set, GREASE values, and HTTP/2 SETTINGS frame — Cloudflare
 // cannot distinguish it from an actual browser. We pick a different
@@ -65,13 +66,15 @@ let _cachedBin: string | null | undefined
 // Candidate layout:
 //   {install}\desktop-pkg\resources\opencode-cli.exe   ← process.execPath
 //   {install}\deps\impersonate\curl-impersonate.exe    ← what we want
+//   (curl-impersonate, no .exe, on macOS/Linux)
 //
 // In dev the layout is:
 //   {repo}/installer-stage/app/desktop-pkg/resources/opencode-cli.exe
 //   {repo}/installer-stage/deps/impersonate/curl-impersonate.exe
+//   (curl-impersonate, no .exe, on macOS/Linux)
 //
 // Walk up from execPath looking for a sibling `deps/impersonate/
-// curl-impersonate.exe`. Covers both.
+// curl-impersonate.exe` (or `curl-impersonate` on macOS/Linux). Covers both.
 function resolveImpersonateBin(): string | null {
   if (_cachedBin !== undefined) return _cachedBin
   // Explicit override for custom installs and for environments that must
@@ -96,9 +99,10 @@ function resolveImpersonateBin(): string | null {
     }
   }
   try {
+    const binaryName = process.platform === "win32" ? "curl-impersonate.exe" : "curl-impersonate"
     let dir = pathResolve(pathDirname(process.execPath))
     for (let i = 0; i < 6; i++) {
-      const candidate = pathJoin(dir, "deps", "impersonate", "curl-impersonate.exe")
+      const candidate = pathJoin(dir, "deps", "impersonate", binaryName)
       try {
         statSync(candidate)
         _cachedBin = candidate

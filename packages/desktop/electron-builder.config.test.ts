@@ -13,9 +13,9 @@ import { CLI_BINARIES, nodePtyPackage } from "./script/utils"
 const { FileMatcher } = createRequire(import.meta.resolve("electron-builder"))("app-builder-lib/out/fileMatcher")
 
 const channels = [
-  { channel: "dev", appId: "ai.larpcode.desktop.dev" },
-  { channel: "beta", appId: "ai.larpcode.desktop.beta" },
-  { channel: "prod", appId: "ai.larpcode.desktop" },
+  { channel: "dev", appId: "ai.larpcode.desktop.dev", productName: "LarpCode Dev" },
+  { channel: "beta", appId: "ai.larpcode.desktop.beta", productName: "LarpCode Beta" },
+  { channel: "prod", appId: "ai.larpcode.desktop.macos", productName: "LarpCode macOS" },
 ] as const
 
 function load(channel: string, target?: string): Configuration {
@@ -47,15 +47,16 @@ function trimFilter(dir: string, config: Configuration) {
   ]).createFilter()
 }
 
-test.each(channels)("channel identity for $channel", ({ channel, appId }) => {
+test.each(channels)("channel identity for $channel", ({ channel, appId, productName }) => {
   const config = load(channel)
   expect(config.appId).toBe(appId)
+  expect(config.productName).toBe(productName)
   // LarpCode updates itself from its own public releases, never OpenCode's
   // update service. The custom updater reads update.json; this generic feed is
   // only what electron-builder records for packaged metadata.
   expect(config.publish).toEqual({
     provider: "generic",
-    url: "https://github.com/Tazmyan/LarpCode/releases/latest/download/",
+    url: "https://github.com/Aero-Apex/LarpCode-MacOS/releases/latest/download/",
     channel: "latest",
   })
   expect(config.extraMetadata?.desktopName).toBe(`${appId}.desktop`)
@@ -94,8 +95,10 @@ test.each(channels)("macOS bundle for $channel", ({ channel }) => {
   const config = load(channel)
   expect(config.mac?.icon).toBe(channel === "prod" ? "resources/icons/icon.icon" : "resources/icons/icon.icns")
   expect(config.dmg?.icon).toBe(channel === "prod" ? "resources/icons/icon.icns" : undefined)
-  // The prod override must keep the rest of the shared macOS settings.
-  expect(config.mac?.target).toEqual(["dmg", "zip"])
+  // Every channel ships both macOS distribution formats.
+  expect(config.mac?.target).toContain("dmg")
+  expect(config.mac?.target).toContain("zip")
+  expect(config.artifactName).toMatch(/^LarpCode-macOS-/)
 
   for (const key of [
     "NSMicrophoneUsageDescription",
@@ -106,6 +109,15 @@ test.each(channels)("macOS bundle for $channel", ({ channel }) => {
     "NSRemovableVolumesUsageDescription",
   ])
     expect(config.mac?.extendInfo?.[key], key).toMatch(/\S/)
+})
+
+test("no channel config references the Windows upstream feed or installer", () => {
+  for (const { channel } of channels) {
+    const serialized = JSON.stringify(load(channel))
+
+    expect(serialized).not.toContain("Tazmyan/LarpCode")
+    expect(serialized).not.toContain("LarpCode-Setup.exe")
+  }
 })
 
 test("the production Icon Composer package references its bundled artwork", async () => {

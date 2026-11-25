@@ -13,9 +13,10 @@ export const checkAppExists = Effect.fn("DesktopFiles.checkAppExists")(function*
 })
 
 export const resolveAppPath = Effect.fn("DesktopFiles.resolveAppPath")(function* (appName: string) {
-  if (process.platform !== "win32") return appName
+  if (process.platform === "win32") return yield* resolveWindowsAppPath(appName)
+  if (process.platform === "darwin") return yield* resolveMacosAppPath(appName)
 
-  return yield* resolveWindowsAppPath(appName)
+  return appName
 })
 
 const checkMacosApp = Effect.fn("DesktopFiles.checkMacosApp")(function* (appName: string) {
@@ -33,6 +34,13 @@ const checkMacosApp = Effect.fn("DesktopFiles.checkMacosApp")(function* (appName
   return yield* Effect.tryPromise(() => execFilePromise("which", [appName])).pipe(
     Effect.as(true),
     Effect.orElseSucceed(() => false),
+  )
+})
+
+const resolveMacosAppPath = Effect.fn("DesktopFiles.resolveMacosAppPath")(function* (appName: string) {
+  return yield* Effect.tryPromise(() => execFilePromise("which", [appName])).pipe(
+    Effect.map((result) => result.stdout.toString().trim()),
+    Effect.orElseSucceed(() => appName),
   )
 })
 

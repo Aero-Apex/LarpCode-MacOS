@@ -671,7 +671,7 @@ export const dict = {
   "settings.about.otherContributor.other": "{{count}} სხვა",
   "settings.about.firstPublished": "პირველად გამოქვეყნდა მისურიში, აშშ",
   "settings.about.firstIllustrated": "პირველად ილუსტრირდა ლონდონში, ინგლისი",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, ღია კოდის მქონე კოდირების აგენტი",
   "settings.about.typeset": "აწყობილია Inter და IBM Plex Mono შრიფტებით",
   "settings.about.tagline": "AI ვერ შექმნის შესანიშნავ პროგრამულ უზრუნველყოფას თქვენ გარეშე",

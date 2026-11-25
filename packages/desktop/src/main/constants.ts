@@ -17,17 +17,17 @@ export const VERSION = app.isPackaged ? app.getVersion() : (process.env.OPENCODE
 // the macOS Dock/menu bar label, and the userData folder name. Must match
 // electron-builder productName so an upgraded install finds its own state.
 const appNames: Record<string, string> = {
-  local: "LarpCode",
-  dev: "LarpCode Dev",
-  beta: "LarpCode Beta",
-  prod: "LarpCode",
+  local: "LarpCode macOS",
+  dev: "LarpCode macOS Dev",
+  beta: "LarpCode macOS Beta",
+  prod: "LarpCode macOS",
 }
 
 const appIDs: Record<string, string> = {
-  local: "ai.larpcode.desktop.dev",
-  dev: "ai.larpcode.desktop.dev",
-  beta: "ai.larpcode.desktop.beta",
-  prod: "ai.larpcode.desktop",
+  local: "ai.larpcode.desktop.macos.dev",
+  dev: "ai.larpcode.desktop.macos.dev",
+  beta: "ai.larpcode.desktop.macos.beta",
+  prod: "ai.larpcode.desktop.macos",
 }
 
 // Local renderer/server mode keeps the dev application identity. Fallback
@@ -37,6 +37,6 @@ const isProduction =
   CHANNEL === "prod" ||
   (!process.env.OPENCODE_DESKTOP_CLI_DEV && !process.env.ELECTRON_RENDERER_URL && CHANNEL !== "local" && CHANNEL !== "dev")
 
-export const APP_NAME = isProduction ? (appNames[CHANNEL] ?? "LarpCode") : "LarpCode"
+export const APP_NAME = isProduction ? (appNames[CHANNEL] ?? "LarpCode macOS") : "LarpCode macOS"
 
-export const APP_ID = isProduction ? (appIDs[CHANNEL] ?? "ai.larpcode.desktop") : (appIDs[CHANNEL] ?? "ai.larpcode.desktop.dev")
+export const APP_ID = isProduction ? (appIDs[CHANNEL] ?? "ai.larpcode.desktop.macos") : (appIDs[CHANNEL] ?? "ai.larpcode.desktop.macos.dev")

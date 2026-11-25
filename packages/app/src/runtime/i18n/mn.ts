@@ -676,7 +676,7 @@ export const dict = {
   "settings.about.otherContributor.other": "өөр {{count}}",
   "settings.about.firstPublished": "Анх АНУ-ын Миссури мужид хэвлэгдсэн",
   "settings.about.firstIllustrated": "Анх Английн Лондон хотод зурагласан",
-  "settings.about.website": "github.com/Tazmyan/LarpCode",
+  "settings.about.website": "github.com/Aero-Apex/LarpCode-MacOS",
   "settings.about.description": "LarpCode, нээлттэй эхийн кодчиллын агент",
   "settings.about.typeset": "Inter болон IBM Plex Mono үсгийн хэвээр өрсөн",
   "settings.about.tagline": "Тангүйгээр AI гайхалтай програм хангамж бүтээж чадахгүй",

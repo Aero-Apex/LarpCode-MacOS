@@ -221,7 +221,7 @@ export function ErrorComponent(props: { error: Error; reset: () => void; mode?: 
 function buildIssueURL(message: string, stack: string, version: string) {
   // LarpCode has no bug-report issue template, so prefill the standard title and
   // body fields that GitHub's new-issue form accepts from the query string.
-  const url = new URL("https://github.com/Tazmyan/LarpCode/issues/new")
+  const url = new URL("https://github.com/Aero-Apex/LarpCode-MacOS/issues/new")
   url.searchParams.set("title", `TUI crash: ${message}`)
 
   // Budget the stack against the fully URL-encoded length (not the raw length) so
